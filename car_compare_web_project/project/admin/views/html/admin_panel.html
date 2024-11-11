@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link href="../css/admin_panel.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Başlık -->
+        <header class="admin-header">
+            <h1>Admin Dashboard</h1>
+        </header>
+
+        <!-- Ana içerik alanı -->
+        <main class="admin-main">
+            <!-- İstatistik Kartları -->
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <h2>Aktif Kullanıcılar</h2>
+                    <p>120</p>
+                </div>
+                <div class="stat-card">
+                    <h2>Ziyaretçi Sayısı</h2>
+                    <p>3,450</p>
+                </div>
+                <div class="stat-card">
+                    <h2>Arama Sayısı</h2>
+                    <p>980</p>
+                </div>
+            </div>
+
+            <!-- Karşılaştırılan Arabalar İstatistikleri -->
+            <div class="stats-table">
+                <h2>Karşılaştırılan Arabalar</h2>
+
+                <!-- İstatistik Barları -->
+                <div class="stat-bar">
+                    <span>Toyota Camry</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 80%;"></div>
+                        <span class="bar-value">120 Karşılaştırma</span>
+                    </div>
+                </div>
+
+                <div class="stat-bar">
+                    <span>Honda Accord</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 70%;"></div>
+                        <span class="bar-value">105 Karşılaştırma</span>
+                    </div>
+                </div>
+
+                <div class="stat-bar">
+                    <span>BMW 3 Series</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 60%;"></div>
+                        <span class="bar-value">90 Karşılaştırma</span>
+                    </div>
+                </div>
+
+                <div class="stat-bar">
+                    <span>Audi A4</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 50%;"></div>
+                        <span class="bar-value">75 Karşılaştırma</span>
+                    </div>
+                </div>
+
+                <div class="stat-bar">
+                    <span>Mercedes C-Class</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 40%;"></div>
+                        <span class="bar-value">60 Karşılaştırma</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kullanıcı Arama -->
+            <div class="user-search">
+                <h2>Kullanıcı Ara</h2>
+                <input type="text" placeholder="Kullanıcı adını veya email'i girin">
+                <button>Ara</button>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

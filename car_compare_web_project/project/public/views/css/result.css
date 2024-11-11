@@ -1,0 +1,115 @@
+body {
+    font-family: 'Francois One', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: rgba(3, 6, 32, 1);
+    color: rgba(248, 249, 251, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.comparison-container {
+    width: 90%;
+    max-width: 1000px;
+    background-color: rgba(0, 3, 28, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.comparison-header {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: rgba(178, 203, 223, 1);
+}
+
+.car-identifiers {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.car-identifier {
+    background-color: rgba(11, 54, 103, 0.8);
+    border-radius: 8px;
+    padding: 10px;
+    width: 45%;
+    text-align: center;
+    color: rgba(248, 249, 251, 0.9);
+    font-size: 1.2rem;
+}
+
+.comparison-block {
+    background-color: rgba(11, 54, 103, 0.8);
+    margin: 15px 0;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.feature-name {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: rgba(178, 203, 223, 1);
+}
+
+.feature-comparison {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.car-column {
+    background-color: rgba(248, 249, 251, 0.1);
+    border-radius: 5px;
+    padding: 10px 20px;
+    width: 45%;
+    text-align: center;
+    color: rgba(248, 249, 251, 0.9);
+    position: relative;
+}
+
+.car-column.better {
+    border: 2px solid rgba(0, 200, 83, 1);
+    background-color: rgba(0, 200, 83, 0.1);
+}
+
+.result-icon {
+    font-size: 1.5rem;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.result-icon.up::before {
+    content: '▲';
+    color: rgba(0, 200, 83, 1); /* Yeşil yukarı ok */
+}
+
+.result-icon.down::before {
+    content: '▼';
+    color: rgba(255, 69, 58, 1); /* Kırmızı aşağı ok */
+}
+
+/* Karşılaştır Butonları */
+.button-wrapper {
+    margin: 20px 0;
+}
+
+.compare-button {
+    background-color: rgba(11, 54, 103, 1);
+    color: rgba(248, 249, 251, 1);
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.compare-button:hover {
+    background-color: rgba(0, 200, 83, 1);
+}

@@ -1,0 +1,83 @@
+body {
+    font-family: 'Francois One', sans-serif;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('../images/v603_68.png') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.auth-overlay {
+    background-color: rgba(3, 6, 32, 0.8); /* Saydam katman */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-wrapper {
+    background-color: rgba(0, 3, 28, 0.9); /* Arka plan kutusu saydamlığı */
+    padding: 2rem;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.auth-header {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: rgba(178, 203, 223, 1);
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-form label {
+    text-align: left;
+    margin-bottom: 0.5rem;
+}
+
+.auth-form input {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(178, 203, 223, 1);
+    border-radius: 5px;
+    background-color: rgba(248, 249, 251, 0.1);
+    color: #fff;
+}
+
+.auth-button {
+    background-color: rgba(3, 7, 32, 1);
+    color: rgba(178, 203, 223, 1);
+    padding: 0.7rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.auth-button:hover {
+    background-color: rgba(11, 54, 103, 1);
+}
+
+.auth-links {
+    margin-top: 1rem;
+}
+
+.auth-links a {
+    color: rgba(178, 203, 223, 1);
+    text-decoration: none;
+    margin: 0 0.5rem;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}

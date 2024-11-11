@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Francois+One&display=swap" rel="stylesheet" />
+    <link href="./main.css" rel="stylesheet" />
+    <title>Document</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="v648_3">
+        <div class="v603_4">
+            <svg class="vector-1" width="67" height="611" viewBox="0 0 67 611" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M31.1537 610.147L58.3838 269.717L8.66748 338.099L19.9106 169.562L31.1537 1.02417" stroke="white" stroke-width="12.9184"/>
+            </svg>
+        </div>
+           
+        <div class="v648_4">
+            <div class="v603_68"></div>
+            <div class="v603_67"></div>
+            <div class="v603_69"></div>
+        </div>
+        
+        <div class="v603_66"></div>
+        
+        <div class="v603_97"></div>
+
+        <span class="v603_98">2024 PEAR</span>
+        
+        <div class="v603_2"></div>
+       
+       
+      
+       
+        <div class="v603_80"></div>
+
+       
+       
+        <div class="v603_81"></div>
+        <span class="v603_7">vs</span>
+        <span class="v603_78">vs</span>
+        <div class="v603_91">
+            <div class="v603_84"></div>
+            <div class="v603_85"></div>
+            <div class="v603_83"></div>
+            <span class="v603_86">vs</span>
+        </div>
+        <div class="v603_99">
+            <div class="v603_100"></div>
+            <div class="v603_101"></div>
+            <div class="v603_102"></div>
+            <span class="v603_103">vs</span>
+        </div>
+        <div class="v603_104">
+            <div class="v603_105"></div>
+            <div class="v603_106"></div>
+            <div class="v603_107"></div>
+            <span class="v603_108">vs</span>
+        </div>
+        <div class="v603_92">
+            <div class="v603_93"></div>
+            <div class="v603_94"></div>
+            <div class="v603_95"></div>
+            <span class="v603_96">vs</span>
+        </div>
+
+
+        <div class="custom-combobox-container">
+            <select class="custom-combobox" id="combobox-left-1">
+                <option value="">Bir araç seçin</option>
+                <option value="toyota">Toyota</option>
+                <option value="honda">Honda</option>
+                <option value="bmw">BMW</option>
+                <option value="audi">Audi</option>
+                <option value="mercedes">Mercedes</option>
+            </select>
+        </div>
+
+        
+
+        <div class="custom-combobox-container2">
+            <select class="custom-combobox2" id="combobox-left-2">
+                <option value="">Bir araç seçin</option>
+                <option value="toyota">Toyota</option>
+                <option value="honda">Honda</option>
+                <option value="bmw">BMW</option>
+                <option value="audi">Audi</option>
+                <option value="mercedes">Mercedes</option>
+            </select>
+        </div>
+
+
+
+
+        <div class="custom-combobox-containersag">
+            <select class="custom-comboboxsag" id="combobox-right-1">
+                <option value="">Bir araç seçin</option>
+                <option value="toyota">Toyota</option>
+                <option value="honda">Honda</option>
+                <option value="bmw">BMW</option>
+                <option value="audi">Audi</option>
+                <option value="mercedes">Mercedes</option>
+            </select>
+        </div>
+
+        
+
+        <div class="custom-combobox-container2sag">
+            <select class="custom-combobox2sag"id="combobox-right-2">
+                <option value="">Bir araç seçin</option>
+                <option value="toyota">Toyota</option>
+                <option value="honda">Honda</option>
+                <option value="bmw">BMW</option>
+                <option value="audi">Audi</option>
+                <option value="mercedes">Mercedes</option>
+            </select>
+        </div>
+        
+       
+       
+
+  <span class="v603_71">Compare Cars</span>
+        <span class="v603_72">compare cars with ease and choose what best for you</span>
+        <div class="v603_73"></div>
+        <div class="v603_74"></div>
+        <span class="v603_75">Most Compared Cars</span>
+
+
+      <!-- Karşılaştır Butonu -->
+      <form id="compare-form">
+        <select id="combo-box" name="selection">
+            <option value="option1">Seçenek 1</option>
+            <option value="option2">Seçenek 2</option>
+            <option value="option3">Seçenek 3</option>
+        </select>
+        <button type="button" class="v603_65" id="compare-button">
+            <span class="v603_64">Karşılaştır</span>
+        </button>
+    </form>
+    
+
+<!-- Açılır İçerik Bölümü -->
+ <div id="compare-content" style="display: none;">
+            <p>Karşılaştırma sonuçları burada görünecek.</p>
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <script>
+
+document.addEventListener("DOMContentLoaded", function () {
+    const comboboxLeft1 = document.getElementById('combobox-left-1');
+    const comboboxLeft2 = document.getElementById('combobox-left-2');
+    const comboboxRight1 = document.getElementById('combobox-right-1');
+    const comboboxRight2 = document.getElementById('combobox-right-2');
+    const compareButton = document.getElementById('compare-button');
+    const compareContent = document.getElementById('compare-content');
+
+    function checkSelections() {
+        if (comboboxLeft1.value && comboboxLeft2.value && comboboxRight1.value && comboboxRight2.value) {
+            compareButton.classList.add('enabled');
+            compareButton.style.pointerEvents = 'auto'; // Butonu etkinleştir
+        } else {
+            compareButton.classList.remove('enabled');
+            compareButton.style.pointerEvents = 'none'; // Butonu devre dışı bırak
+        }
+    }
+
+    // Göster/gizle işlevi
+    function toggleContent() {
+        if (compareContent.style.display === 'none' || compareContent.style.display === '') {
+            compareContent.style.display = 'block'; // İçeriği göster
+        } else {
+            compareContent.style.display = 'none'; // İçeriği gizle
+        }
+    }
+
+    // Her combobox'ın değişiminde seçimleri kontrol et
+    comboboxLeft1.addEventListener('change', checkSelections);
+    comboboxLeft2.addEventListener('change', checkSelections);
+    comboboxRight1.addEventListener('change', checkSelections);
+    comboboxRight2.addEventListener('change', checkSelections);
+
+    // Butona tıklayınca içeriği aç veya kapat
+    compareButton.addEventListener('click', function () {
+        if (compareButton.classList.contains('enabled')) {
+            toggleContent(); // İçeriği göster/gizle
+        }
+    });
+});
+
+
+
+
+    </script>
+    
+    
+</body>
+</html>
