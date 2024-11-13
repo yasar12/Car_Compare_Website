@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../configg');
+const sequelize = require('../config/db');
 
 const TechnicalSpecification = sequelize.define('TechnicalSpecification', {
     id: {
@@ -55,9 +55,6 @@ const TechnicalSpecification = sequelize.define('TechnicalSpecification', {
     group_type: {
       type: DataTypes.STRING(50)
     }
-  }, {
-    tableName: 'technicalSpecification',
-    timestamps: false
   });
   
   module.exports = TechnicalSpecification;
