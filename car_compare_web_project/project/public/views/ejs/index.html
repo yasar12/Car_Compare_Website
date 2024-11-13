@@ -3,7 +3,7 @@
 <head>
     <link href="https://fonts.googleapis.com/css?family=Francois+One&display=swap" rel="stylesheet" />
     <link href="../css/main.css" rel="stylesheet" />
-    <title><%= title %></title> <!-- Dinamik başlık eklenebilir -->
+    <title>Car Comparison</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -27,7 +27,7 @@
         
         <div class="v603_97"></div>
 
-        <span class="v603_98"><%= year %> PEAR</span> <!-- Dinamik yıl verisi -->
+        <span class="v603_98">2024 PEAR</span>
 
         <div class="v603_2"></div>
        
@@ -64,36 +64,32 @@
         <div class="custom-combobox-container">
             <select class="custom-combobox" id="combobox-left-1">
                 <option value="">Bir marka seçin</option>
-                <% brandsLeft.forEach(function(brand) { %> <!-- Dinamik marka listesi -->
-                    <option value="<%= brand.value %>"><%= brand.name %></option>
-                <% }); %>
+                <option value="brand1">Brand 1</option>
+                <option value="brand2">Brand 2</option>
             </select>
         </div>
 
         <div class="custom-combobox-container2">
             <select class="custom-combobox2" id="combobox-left-2">
                 <option value="">Bir model seçin</option>
-                <% modelsLeft.forEach(function(model) { %> <!-- Dinamik model listesi -->
-                    <option value="<%= model.value %>"><%= model.name %></option>
-                <% }); %>
+                <option value="model1">Model 1</option>
+                <option value="model2">Model 2</option>
             </select>
         </div>
 
         <div class="custom-combobox-containersag">
             <select class="custom-comboboxsag" id="combobox-right-1">
                 <option value="">Bir marka seçin</option>
-                <% brandsRight.forEach(function(brand) { %> <!-- Dinamik marka listesi -->
-                    <option value="<%= brand.value %>"><%= brand.name %></option>
-                <% }); %>
+                <option value="brand3">Brand 3</option>
+                <option value="brand4">Brand 4</option>
             </select>
         </div>
 
         <div class="custom-combobox-container2sag">
             <select class="custom-combobox2sag" id="combobox-right-2">
                 <option value="">Bir model seçin</option>
-                <% modelsRight.forEach(function(model) { %> <!-- Dinamik model listesi -->
-                    <option value="<%= model.value %>"><%= model.name %></option>
-                <% }); %>
+                <option value="model3">Model 3</option>
+                <option value="model4">Model 4</option>
             </select>
         </div>
 
@@ -103,7 +99,6 @@
         <div class="v603_74"></div>
         <span class="v603_75">Most Compared Cars</span>
 
-        <!-- Karşılaştır Butonu -->
         <form id="compare-form">
             <select id="combo-box" name="selection">
                 <option value="option1">Seçenek 1</option>
@@ -115,14 +110,56 @@
             </button>
         </form>
 
-        <!-- Açılır İçerik Bölümü -->
         <div id="compare-content" style="display: none;">
             <p>Karşılaştırma sonuçları burada görünecek.</p>
         </div>
-
     </div>
 
     <script>
+        
+        document.addEventListener("DOMContentLoaded", function () {
+        const comboboxLeft1 = document.getElementById('combobox-left-1');
+        const comboboxLeft2 = document.getElementById('combobox-left-2');
+        const comboboxRight1 = document.getElementById('combobox-right-1');
+        const comboboxRight2 = document.getElementById('combobox-right-2');
+        const compareButton = document.getElementById('compare-button');
+        const compareContent = document.getElementById('compare-content');
+
+        compareButton.addEventListener('click', function () {
+            if (compareButton.classList.contains('enabled')) {
+                const leftBrand = comboboxLeft1.value;
+                const leftModel = comboboxLeft2.value;
+                const rightBrand = comboboxRight1.value;
+                const rightModel = comboboxRight2.value;
+
+                // Sunucuya veri gönderelim
+                fetch('/compare', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        leftBrand,
+                        leftModel,
+                        rightBrand,
+                        rightModel
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    compareContent.innerHTML = `
+                        <p>${data.message}</p>
+                        <p>Seçilen Sol Araç: ${data.selected.leftBrand} - ${data.selected.leftModel}</p>
+                        <p>Seçilen Sağ Araç: ${data.selected.rightBrand} - ${data.selected.rightModel}</p>
+                    `;
+                    compareContent.style.display = 'block';
+                })
+                .catch(error => console.error('Hata:', error));
+            }
+        });
+    });
+
         document.addEventListener("DOMContentLoaded", function () {
             const comboboxLeft1 = document.getElementById('combobox-left-1');
             const comboboxLeft2 = document.getElementById('combobox-left-2');
@@ -134,32 +171,29 @@
             function checkSelections() {
                 if (comboboxLeft1.value && comboboxLeft2.value && comboboxRight1.value && comboboxRight2.value) {
                     compareButton.classList.add('enabled');
-                    compareButton.style.pointerEvents = 'auto'; // Butonu etkinleştir
+                    compareButton.style.pointerEvents = 'auto';
                 } else {
                     compareButton.classList.remove('enabled');
-                    compareButton.style.pointerEvents = 'none'; // Butonu devre dışı bırak
+                    compareButton.style.pointerEvents = 'none';
                 }
             }
 
-            // Göster/gizle işlevi
             function toggleContent() {
                 if (compareContent.style.display === 'none' || compareContent.style.display === '') {
-                    compareContent.style.display = 'block'; // İçeriği göster
+                    compareContent.style.display = 'block';
                 } else {
-                    compareContent.style.display = 'none'; // İçeriği gizle
+                    compareContent.style.display = 'none';
                 }
             }
 
-            // Her combobox'ın değişiminde seçimleri kontrol et
             comboboxLeft1.addEventListener('change', checkSelections);
             comboboxLeft2.addEventListener('change', checkSelections);
             comboboxRight1.addEventListener('change', checkSelections);
             comboboxRight2.addEventListener('change', checkSelections);
 
-            // Butona tıklayınca içeriği aç veya kapat
             compareButton.addEventListener('click', function () {
                 if (compareButton.classList.contains('enabled')) {
-                    toggleContent(); // İçeriği göster/gizle
+                    toggleContent();
                 }
             });
         });
