@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Comparison Results</title>
+    <link href="/views/css/result.css" rel="stylesheet">
+</head>
+<body>
+    <div class="comparison-container">
+        <!-- Üstteki Karşılaştır Butonu -->
+        <div class="button-wrapper">
+            <a href="/car_compare" class="compare-button">Tekrar Karşılaştır</a>
+        </div>
+
+        <h1 class="comparison-header">Car Comparison Results</h1>
+
+        <!-- Araba Başlıkları -->
+        <div class="car-identifiers">
+            <div class="car-identifier">
+                <h2>car1: <%= cars[0]+cars[1] %> <%=cars[0]+cars[1] %></h2>
+            </div>
+            <div class="car-identifier">
+                <h2>car2: <%= cars[2]+cars[3] %> <%= cars[2]+cars[3] %></h2>
+            </div>
+        </div>
+
+        <!-- 16 özellik bloğu -->
+        <div class="comparison-block">
+            <h3 class="feature-name">Engine Power</h3>
+            <div class="feature-comparison">
+                <div class="car-column <%= enginePower1 > enginePower2 ? 'better' : '' %>">
+                    <p><%= enginePower1 %> HP</p>
+                    <span class="result-icon <%= enginePower1 > enginePower2 ? 'up' : 'down' %>"></span>
+                </div>
+                <div class="car-column <%= enginePower2 > enginePower1 ? 'better' : '' %>">
+                    <p><%= enginePower2 %> HP</p>
+                    <span class="result-icon <%= enginePower2 > enginePower1 ? 'up' : 'down' %>"></span>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Diğer özellikler (Örnek 15 özellik daha) -->
+        <% features.forEach(feature => { %>
+        <div class="comparison-block">
+            <h3 class="feature-name"><%= feature.name %></h3>
+            <div class="feature-comparison">
+                <div class="car-column <%= feature.car1Value > feature.car2Value ? 'better' : '' %>">
+                    <p><%= feature.car1Value %></p>
+                    <span class="result-icon <%= feature.car1Value > feature.car2Value ? 'up' : 'down' %>"></span>
+                </div>
+                <div class="car-column <%= feature.car2Value > feature.car1Value ? 'better' : '' %>">
+                    <p><%= feature.car2Value %></p>
+                    <span class="result-icon <%= feature.car2Value > feature.car1Value ? 'up' : 'down' %>"></span>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+
+        <!-- Alttaki Karşılaştır Butonu -->
+        <div class="button-wrapper">
+            <a href="/car_compare" class="compare-button">Tekrar Karşılaştır</a>
+        </div>
+    </div>
+</body>
+</html>
