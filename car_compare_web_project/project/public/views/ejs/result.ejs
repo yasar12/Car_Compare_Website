@@ -18,45 +18,49 @@
         <!-- Araba Başlıkları -->
         <div class="car-identifiers">
             <div class="car-identifier">
-                <h2>car1: <%= cars[0]+cars[1] %> <%=cars[0]+cars[1] %></h2>
+                <h2>car1: <%= carname1 %> <%=carname1 %></h2>
             </div>
             <div class="car-identifier">
-                <h2>car2: <%= cars[2]+cars[3] %> <%= cars[2]+cars[3] %></h2>
+                <h2>car2: <%= carname2 %> <%= carname2 %></h2>
             </div>
         </div>
 
-        <!-- 16 özellik bloğu -->
-        <div class="comparison-block">
-            <h3 class="feature-name">Engine Power</h3>
-            <div class="feature-comparison">
-                <div class="car-column <%= enginePower1 > enginePower2 ? 'better' : '' %>">
-                    <p><%= enginePower1 %> HP</p>
-                    <span class="result-icon <%= enginePower1 > enginePower2 ? 'up' : 'down' %>"></span>
-                </div>
-                <div class="car-column <%= enginePower2 > enginePower1 ? 'better' : '' %>">
-                    <p><%= enginePower2 %> HP</p>
-                    <span class="result-icon <%= enginePower2 > enginePower1 ? 'up' : 'down' %>"></span>
-                </div>
-            </div>
-            
-        </div>
 
-        <!-- Diğer özellikler (Örnek 15 özellik daha) -->
-        <% features.forEach(feature => { %>
-        <div class="comparison-block">
-            <h3 class="feature-name"><%= feature.name %></h3>
-            <div class="feature-comparison">
-                <div class="car-column <%= feature.car1Value > feature.car2Value ? 'better' : '' %>">
-                    <p><%= feature.car1Value %></p>
-                    <span class="result-icon <%= feature.car1Value > feature.car2Value ? 'up' : 'down' %>"></span>
-                </div>
-                <div class="car-column <%= feature.car2Value > feature.car1Value ? 'better' : '' %>">
-                    <p><%= feature.car2Value %></p>
-                    <span class="result-icon <%= feature.car2Value > feature.car1Value ? 'up' : 'down' %>"></span>
-                </div>
-            </div>
+        <% features = [
+  { key: 'year', name: 'Year' },
+  { key: 'price', name: 'Price' },
+  { key: 'horsepower', name: 'Horsepower' },
+  { key: 'weight', name: 'Weight' },
+  { key: 'top_speed', name: 'Top Speed' },
+  { key: 'drivetrain', name: 'Drivetrain' },
+  { key: 'braking', name: 'Braking' },
+  { key: 'acceleration', name: 'Acceleration' },
+  { key: 'handling', name: 'Handling' },
+  { key: 'performance_index', name: 'Performance Index' },
+  { key: 'zero_to_sixty', name: '0-60 mph Time' },
+  { key: 'zero_to_hundred', name: '0-100 mph Time' },
+  { key: 'weight_distribution', name: 'Weight Distribution' },
+  { key: 'plb_ratio', name: 'Pounds per Horsepower' },
+  { key: 'group_type', name: 'Group Type' }
+] %>
+
+<% features.forEach(feature => { %>
+<div class="comparison-block">
+    <h3 class="feature-name"><%= feature.name %></h3>
+    <div class="feature-comparison">
+        <div class="car-column <%= car1[feature.key] > car2[feature.key] ? 'better' : '' %>">
+            <p><%= car1[feature.key] %></p>
+            <span class="result-icon <%= car1[feature.key] > car2[feature.key] ? 'up' : 'down' %>"></span>
         </div>
-        <% }) %>
+        <div class="car-column <%= car2[feature.key] > car1[feature.key] ? 'better' : '' %>">
+            <p><%= car2[feature.key] %></p>
+            <span class="result-icon <%= car2[feature.key] > car1[feature.key] ? 'up' : 'down' %>"></span>
+        </div>
+    </div>
+</div>
+<% }) %>
+
+ 
 
         <!-- Alttaki Karşılaştır Butonu -->
         <div class="button-wrapper">

@@ -1,5 +1,6 @@
 const { connectDB } = require('../config/database');
 const  Cars = require('../model/arabalar'); 
+const  teknik = require('../model/teknik_özellikler'); 
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database').sequelize;
 
@@ -37,11 +38,11 @@ const getMarkalar = async () => {
 };
 
 
-const getmodelid = async (model) => {
+const getmodelid = async (model1) => {
   try {
     const car = await Cars.findOne({
       attributes: ['id'],  // Yalnızca id alanını alıyoruz
-      where: { model: model },  // Belirli bir modele ait veriyi almak
+      where: { model: model1 },  // Belirli bir modele ait veriyi almak
       raw: true,  // Sadece veri almak için raw true kullanıyoruz
     });
     
@@ -49,41 +50,27 @@ const getmodelid = async (model) => {
     if (car) {
       return car.id;
     } else {
-      throw new Error(`Model ${model} bulunamadı`);
+      throw new Error(`Model ${model1} bulunamadı`);
     }
   } catch (error) {
-    console.error(`${model} modeli için id alınırken hata oluştu:`, error);
+    console.error(`${model1} modeli için id alınırken hata oluştu:`, error);
     throw error;
   }
 };
 
-const getCarsByIds = async (carId1, carId2) => {
-  try {
-    // Birden fazla araba ID'sine göre arabaların verilerini alıyoruz
-    const cars = await Cars.findAll({
-      where: {
-        id: { 
-          [sequelize.Op.in]: [carId1, carId2]  // ID'ler arasında carId1 ve carId2 olan arabaları getiriyoruz
-        }
-      },
-      raw: true,  // Veriyi sade bir nesne olarak almak için raw true kullanıyoruz
-    });
-
-    // Eğer arabalar bulunduysa, her iki arabanın verisini döndürüyoruz
-    if (cars.length === 2) {
-      return {
-        car1: cars[0],  // İlk araba verisi
-        car2: cars[1]   // İkinci araba verisi
-      };
-    } else {
-      throw new Error(`ID'leri ${carId1} ve ${carId2} olan arabalar bulunamadı veya eksik.`);
+  const getCarsByIds = async(id1)=> {
+    try {
+        const cars = await teknik.findAll({
+            where: {id:id1},
+                raw :true,
+                
+            
+        });
+        return cars;
+    } catch (error) {
+        console.error('Veritabanı hatası:', error);
     }
-  } catch (error) {
-    console.error(`ID'leri ${carId1} ve ${carId2} olan arabalar alınırken hata oluştu:`, error);
-    throw error;
-  }
-};
-
+}
 
 
   
