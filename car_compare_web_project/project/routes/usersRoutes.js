@@ -14,14 +14,14 @@ route.get("/car_compare", async (req, res) => {
       const cars = await userrepository.getMarkalar();
       console.log(cars);
       
-      res.render("index", { brands: cars,modeller: ['i5', 'i7', 'X5'] });
+      res.render("index", { brands: cars,modeller: ['empty'] });
     } catch (error) {
       console.error('Error:', error);
       res.status(500).send('Internal Server Error');
     }
   });
 
-
+  
   route.post("/car_compare", async (req, res) => {
     try {
         const { marka } = req.body;  // POST isteği ile gelen marka
@@ -40,32 +40,20 @@ route.get("/car_compare", async (req, res) => {
     }
 });
 
-route.post('/car_compare/compare', async (req, res) => {
+route.post('/car_compare/result', async (req, res) => {
     try {
-        const arabalar = req.body;  // POST ile gelen marka ve model bilgileri
+        const arabalar = req.body;  // POST ile gelen marka ve model bilgileri      
 
-        // Gelen verileri konsola yazdırarak kontrol edelim
-        console.log(arabalar);
-       
-        
-        // Karşılaştırma sonucu (burada işleme yapılabilir)
-        
-
-        // Karşılaştırma sonuçlarını JSON olarak gönderiyoruz
        const car1=arabalar.model1;
        const car2=arabalar.model2;
        
-        
-      const carspec1=await userrepository.getmodelid(car1)
-      const carspec2=await userrepository.getmodelid(car2);
-      const carssp1=await userrepository.getCarsByIds(carspec1);
-      const carssp2=await userrepository.getCarsByIds(carspec2);
-      console.log(await userrepository.getCarsByIds(carspec2));
+      
        const carfull1=arabalar.marka+" "+car1
        const carfull2=arabalar.marka+" "+car1
-      res.setHeader('/car_compare/compare');
-      res.redirect('/car_compare/compare');
-      res.render('result.ejs',{carname1:carfull1,carname2:carfull2,car1:carssp1,car2:carssp2});
+      
+       res.redirect(`/car_compare/result?carname1=${carfull1}&carname2=${carfull2}`);
+
+      
       
        
     } catch (error) {
@@ -74,10 +62,36 @@ route.post('/car_compare/compare', async (req, res) => {
     }
 });
 
-route.get('/car_compare/compare', async (req, res) => {
+route.get('/car_compare/result', async (req, res) => {
+  const { marka1, model1, marka2, model2 } = req.query;
 
+  const carSpec1 = await userrepository.getmodelid(model1);
+  const carSpec2 = await userrepository.getmodelid(model2);
+  
+  const carDetails1 = await userrepository.getCarsByIds(carSpec1);
+  const carDetails2 = await userrepository.getCarsByIds(carSpec2);
+  
+  // carDetails1 ve carDetails2'nin birer dizi olduğunu varsayıyorum
+  // Tek bir obje almak için dizi elemanına erişiyoruz
+  const car1 = carDetails1[0];
+  const car2 = carDetails2[0];
+  
+  console.log(car1);
+  // `result.ejs` şablonuna bu verileri gönderiyoruz
+  res.render('result', {
+      carname1: `${marka1} ${model1}`,
+      carname2: `${marka2} ${model2}`,
+      car1: car1,
+      car2: car2
+  });
+  
+  
 
+  
 });
+
+
+
 module.exports = route;
 
 

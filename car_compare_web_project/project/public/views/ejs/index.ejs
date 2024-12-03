@@ -210,32 +210,23 @@ document.getElementById('compare-button').addEventListener('click', function() {
     var model2 = document.getElementById('combobox-right-2').value;
 
     if (marka1 && model1 && marka2 && model2) {
-        var data = {
-            marka1: marka1,
-            model1: model1,
-            marka2: marka2,
-            model2: model2
-        };
+    // URL üzerinden göndermek için verileri birleştiriyoruz
+    const queryParams = new URLSearchParams({
+        marka1: marka1,
+        model1: model1,
+        marka2: marka2,
+        model2: model2
+    });
 
-        // GET isteği gönderiyoruz
-        fetch('/car_compare/compare', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)  // Marka ve model verilerini gönderiyoruz
-        })
-        .then(response => response.json())  // Sunucudan gelen yanıtı al
-        .then(data => {
-            console.log('Karşılaştırma Sonucu:', data);
-            // Sonuçları burada işleyebilirsiniz
-        })
-        .catch(error => {
-            console.error('Karşılaştırma işlemi sırasında hata oluştu:', error);
-        });
-    } else {
-        alert('Lütfen her iki marka ve model seçimini yapın.');
-    }
+    // Kullanıcıyı result sayfasına yönlendiriyoruz
+    window.location.href = `/car_compare/result?${queryParams.toString()}`;
+} else {
+    alert('Lütfen her iki marka ve model seçimini yapın.');
+}
+
+
+    
+
 });
 
 
