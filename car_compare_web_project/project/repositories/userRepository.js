@@ -1,9 +1,10 @@
 const { connectDB } = require('../config/database');
 const  Cars = require('../model/arabalar'); 
 const  teknik = require('../model/teknik_özellikler'); 
-const { DataTypes } = require('sequelize');
+const  compare_scored = require('../model/Compared_cars');
+const { DataTypes, or } = require('sequelize');
 const sequelize = require('../config/database').sequelize;
-
+const { Op } = require('sequelize');
 const Kullanici_ekle = async () => {
   await connectDB(); 
 
@@ -58,10 +59,11 @@ const getmodelid = async (model1) => {
   }
 };
 
+
   const getCarsByIds = async(id1)=> {
     try {
         const cars = await teknik.findAll({
-            where: {id:id1},
+            where: {carid:id1},
                 raw :true,
                 
             
@@ -72,9 +74,102 @@ const getmodelid = async (model1) => {
     }
 }
 
+const getCarsByIdsname = async(id1)=> {
+  try {
+      const cars = await Cars.findAll({
+        attributes: ['marka','model'],
+          where: {id:id1},
+              raw :true,
+              
+          
+      });
+      return cars;
+  } catch (error) {
+      console.error('Veritabanı hatası:', error);
+  }
+}
 
+const send_compared_cars = async (model1,model2) => {
+    try {
+        const car1 = await getmodelid(model1);
+        const car2 = await getmodelid(model2);
+        const  value=await compare_scored.findOne(
+           // Güncellenecek alanlar
+          {
+            attributes: ['compare_score'],
+            where: {
+              [Op.or]: [
+                { first_car_id: car1, second_car_id: car2},
+                { first_car_id: car2, second_car_id: car1},
+              ],
+            },
+          }
+        );
+
+      
+       if (value === null) {
+        await compare_scored.create({
+          first_car_id: car1,
+          second_car_id: car2,
+          compare_score: 1
+        })
+       }
+        await compare_scored.update(
+          { compare_score: parseInt(value.compare_score)+1 }, // Güncellenecek alanlar
+          {
+            where: {
+              [Op.or]: [
+                { first_car_id: car1, second_car_id: car2},
+                { first_car_id: car2, second_car_id: car1},
+              ],
+            },
+          }
+        );
+      
+        
+      
+
+
+
+    } catch (error) {
+        console.error('Veritabanı hatası:', error);
+    }
+}
   
+async function getmostcompared() {
+  try {
+    const valuess = await compare_scored.findAll({
+      attributes: ['first_car_id', 'second_car_id'],
+      limit: 4,
+    });
 
+    const Arabalar = [];
+    
+    for (const value of valuess) {
+      
+        const [araba1, araba2] = await Promise.all([
+        getCarsByIdsname(value.first_car_id),
+        getCarsByIdsname(value.second_car_id),
+      ]);
+      if (araba1.length !== 0) {
+        Arabalar.push(araba1);
+      } 
+        if( araba2.length !== 0) {    
+      Arabalar.push(araba2);
+    }
+      
+    }
+
+for (let i = 0; i < Arabalar.length; i++) {
+  for (let j = 0; j < Arabalar[i].length; j++) {
+    console.log(Arabalar[i][j]);
+  }
+}
+    
+  } catch (error) {
+    console.error('Error fetching car details:', error);
+  }
+}
 
 const getModeller = async (marka) => {
   try {
@@ -106,5 +201,7 @@ module.exports = {
     getModeller,
     getmodelid,
     getCarsByIds,
-    İstatistik_Getir
+    İstatistik_Getir,
+    send_compared_cars,
+    getmostcompared
   };

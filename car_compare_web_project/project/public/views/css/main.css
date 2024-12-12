@@ -107,7 +107,7 @@ body {
   color: rgba(248,249,251,1);
   position: absolute;
   top: 2147px;
-  left: 695px;
+  left: 1200px;
   font-family: Francois One;
   font-weight: Regular;
   font-size: 19px;
@@ -124,7 +124,7 @@ body {
   opacity: 1;
   position: absolute;
   top: 1118px;
-  left: 1150px;
+  left: 1550px;
   overflow: hidden;
 }
 
@@ -139,7 +139,7 @@ body {
   opacity: 1;
   position: absolute;
   top: 1104px;
-  left: 50px;
+  left: 380px;
   overflow: hidden;
   justify-content: center;
 }
@@ -153,7 +153,7 @@ body {
   opacity: 1;
   position: absolute;
   top: 1104px;
-  left: 920px;
+  left: 1220px;
   border-radius: 50%;
 }
 .v603_7 { /*vs text*/
@@ -161,7 +161,7 @@ body {
   color: rgba(3,7,32,1);
   position: absolute;
   top: 1108px;
-  left: 927px;
+  left: 1225px;
   font-family: Francois One;
   font-weight: Regular;
   font-size: 43px;
@@ -181,7 +181,7 @@ body {
   opacity: 1;
   position: absolute;
   top: 1569px;
-  left: 118px;
+  left: 400px;
   overflow: hidden;
 }
 .v603_84 {
@@ -242,8 +242,8 @@ body {
   margin: 6px;
   opacity: 1;
   position: absolute;
-  top: 1805px;
-  left: 861px;
+  top: 1770px;
+  left: 1400px;
   overflow: hidden;
 }
 .v603_100 {
@@ -286,7 +286,7 @@ body {
   width: 63px;
   color: rgba(3,7,32,1);
   position: absolute;
-  top: 65px;
+  top: 87px;
   left: 220px;
   font-family: Francois One;
   font-weight: Regular;
@@ -304,8 +304,8 @@ body {
   margin: 6px;
   opacity: 1;
   position: absolute;
-  top: 1805px;
-  left: 118px;
+  top: 1770px;
+  left: 400px;
   overflow: hidden;
 }
 .v603_105 {
@@ -348,7 +348,7 @@ body {
   width: 63px;
   color: rgba(3,7,32,1);
   position: absolute;
-  top: 65px;
+  top: 87px;
   left: 220px;
   font-family: Francois One;
   font-weight: Regular;
@@ -367,7 +367,7 @@ body {
   opacity: 1;
   position: absolute;
   top: 1577px;
-  left: 861px;
+  left: 1400px;
   overflow: hidden;
 }
 .v603_93 {
@@ -410,7 +410,7 @@ body {
   width: 63px;
   color: rgba(3,7,32,1);
   position: absolute;
-  top: 65px;
+  top: 80px;
   left: 220px;
   font-family: Francois One;
   font-weight: Regular;
@@ -433,7 +433,7 @@ body {
   opacity: 1;
   position: absolute;
   top: 1322px;
-  left: 850px;
+  left: 1140px;
   border-top-left-radius: 19px;
   border-top-right-radius: 19px;
   border-bottom-left-radius: 19px;
@@ -445,7 +445,7 @@ body {
   color: rgba(178,203,223,1);
   position: absolute;
   top: 13px;
-  left: 52px;
+  left: 50px;
   font-family: Francois One;
   font-weight: Regular;
   font-size: 23px;
@@ -471,7 +471,7 @@ body {
   background-color: transparent; /* Arka plan rengi, isteğinize göre değiştirin */
   border: 1px solid transparent; /* Alt kenarlık rengi */
   margin-top: 200px; /* Aşağıya taşıma */
-  margin-left: 350px; /* Sağa taşıma */
+  margin-left: 500px; /* Sağa taşıma */
   transform: scale(1.2);
 }
 
@@ -517,7 +517,7 @@ body {
   background-color: transparent; /* Arka plan rengi, isteğinize göre değiştirin */
   border: 1px solid transparent; /* Alt kenarlık rengi */
   margin-top: 50px; /* Aşağıya taşıma */
-  margin-left: 350px; /* Sağa taşıma */
+  margin-left: 500px; /* Sağa taşıma */
   transform: scale(1.2);
 }
 
@@ -558,7 +558,7 @@ body {
   background-color: transparent; /* Arka plan rengi, isteğinize göre değiştirin */
   border: 1px solid transparent; /* Alt kenarlık rengi */
   margin-top: -119px; /* Aşağıya taşıma */
-  margin-left: 1300px; /* Sağa taşıma */
+  margin-left: 1650px; /* Sağa taşıma */
   transform: scale(1.2);
 }
 
@@ -604,7 +604,7 @@ body {
   background-color: transparent; /* Arka plan rengi, isteğinize göre değiştirin */
   border: 1px solid transparent; /* Alt kenarlık rengi */
   margin-top: 50px; /* Aşağıya taşıma */
-  margin-left: 1300px; /* Sağa taşıma */
+  margin-left: 1650px; /* Sağa taşıma */
   transform: scale(1.2);
 }
 
@@ -673,7 +673,7 @@ body {
   color: rgba(248,249,251,1);
   position: absolute;
   top: 1465px;
-  left: 315px;
+  left: 780px;
   font-family: Francois One;
   font-weight: Regular;
   font-size: 58px;
@@ -683,7 +683,7 @@ body {
 .vector-1 {
   position: absolute;
   top: 0;
-  left: 50%;
+  left: 52.5%;
   transform: translateX(-50%);
 }
 /* Button başlangıçta devre dışı */
