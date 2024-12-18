@@ -108,6 +108,42 @@ route.get('/car_compare/result', async (req, res, next) => {
 });
 
 
+route.get('/admin', (req, res) => {
+  
+  
+    res.render('Admin');
+});
+
+// Route: /api/total-comparisons
+route.get('/api/total-comparisons', async (req, res) => {
+    try {
+        const totalComparisons = await userrepository.Toplam_Karsilastirma_Miktari(); // await eklenmeli!
+        console.log("Toplam Karşılaştırma:", totalComparisons);
+
+        // JSON formatında düzgün döndür
+        res.json({ totalComparisons: totalComparisons || 0 });
+    } catch (error) {
+        console.error("Hata:", error);
+        res.status(500).json({ error: "Veritabanı hatası" });
+    }
+});
+
+
+
+route.get('/api/comparison-data', async (req, res) => {
+    try {
+        const comparisonData = await userrepository.İstatistik_Getir(); // await eklenmeli
+        console.log("Comparison Data:", comparisonData);
+
+        res.json(comparisonData); // Direkt veriyi JSON olarak döndür
+    } catch (error) {
+        console.error("Karşılaştırma verisi hatası:", error);
+        res.status(500).json({ error: "Veritabanı hatası" });
+    }
+});
+
+
+
 route.use(errorHandler);
 
 module.exports = route;

@@ -5,21 +5,8 @@ const  compare_scored = require('../model/Compared_cars');
 const { DataTypes, or } = require('sequelize');
 const sequelize = require('../config/database').sequelize;
 const { Op } = require('sequelize');
-const Kullanici_ekle = async () => {
-  await connectDB(); 
 
- 
-  
 
- 
-};
-
-const Kullanici_sorgula= async () => {
-    await connectDB(); 
-  
-  
-    
-  };
 
   // Marka isimlerini getir sorgusu
 const getMarkalar = async () => {
@@ -187,21 +174,74 @@ const getModeller = async (marka) => {
 };
 
 
-  const İstatistik_Getir= async () => {
-    await connectDB(); 
-  
+//karşılaştırılan arabaların istatistiklerini getiren method
+  const İstatistik_Getir= async () => {   
+    try {
+      const topComparisons = await compare_scored.findAll({
+          attributes: [
+              'first_car_id',
+              'second_car_id',
+              'compare_score',
+              [sequelize.fn('SUM', sequelize.col('compare_score')), 'total_score']
+          ],
+          group: ['first_car_id', 'second_car_id','compare_score'],
+          order: [[sequelize.literal('total_score'), 'DESC']],
+          limit: 5
+      });
+      
+    // Çiftleri saklayacak boş dizi
+
+      // comparisonData'yı dolaşarak çiftleri oluşturuyoruz
+      const pairs = await Promise.all(
+        topComparisons.map(async (comparison) => {
+            const firstCarResult = await getCarsByIdsname(comparison.first_car_id);
+            const secondCarResult = await getCarsByIdsname(comparison.second_car_id);
+    
+            return {
+                firstCar: firstCarResult[0], // Diziden ilk objeyi alıyoruz
+                secondCar: secondCarResult[0],
+                scoree: comparison.compare_score[0]
+            };
+        })
+    );
+    
+      return pairs;
+
+
+  } catch (error) {
+      console.error("En çok karşılaştırılanlar hatası:", error);
+   
+  }
   
     
   };
 
+  const Toplam_Karsilastirma_Miktari= async () => {
+    
+  try{
+      const totalComparisons = await compare_scored.sum('compare_score'); // compare_score sütunundaki toplamı alır
+    
+      return totalComparisons;
+     }  
+     
+     catch (error) {
+      console.error("Toplam karşılaştırma hatası:", error);
+     
+    }
+  
+  };
+
+
+
 module.exports = {
-    Kullanici_ekle,
-    Kullanici_sorgula,
+    
     getMarkalar,
     getModeller,
     getmodelid,
     getCarsByIds,
     İstatistik_Getir,
     send_compared_cars,
-    getmostcompared
+    getmostcompared,
+    Toplam_Karsilastirma_Miktari,
+    İstatistik_Getir
   };
