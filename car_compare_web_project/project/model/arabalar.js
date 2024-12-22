@@ -1,22 +1,25 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+const sequelize = require('../config/database').sequelize;
 
 
-const Car = sequelize.define('Cars', {
-    id: {
-      type: DataTypes.INTEGER,
+const Cars = sequelize.define('Cars', {
+  id: {
+      type: DataTypes.NUMERIC,
+      allowNull: false,
       primaryKey: true,
-      autoIncrement: true,
+      autoIncrement: true // optional, if the ID is auto-incrementing
+  },
+  marka: {
+      type: DataTypes.TEXT,
       allowNull: false
-    },
-    marka: {
-      type: DataTypes.STRING,
+  },
+  model: {
+      type: DataTypes.TEXT,
       allowNull: false
-    },
-    model: {
-      type: DataTypes.STRING,
-      allowNull: false
-    }
-  });
+  }
+}, {
+  tableName: 'Cars', // Specify your table name if different from 'Cars'
+  timestamps: false  // Disable timestamps if not needed
+});
 
-  module.exports = Car;
+module.exports = Cars;

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <title>Car Comparison</title>
+    <base href="/">
+    <link   href="/views/css/main.css" rel="stylesheet"  type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Francois+One&display=swap" rel="stylesheet" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+</head>
+<body>
+    <div class="v648_3">
+        <div class="v603_4">
+            <svg class="vector-1" width="67" height="611" viewBox="0 0 67 611" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M31.1537 610.147L58.3838 269.717L8.66748 338.099L19.9106 169.562L31.1537 1.02417" stroke="white" stroke-width="12.9184"/>
+            </svg>
+        </div>
+           
+        <div class="v648_4">
+            <div class="v603_68"></div>
+            <div class="v603_67"></div>
+            <div class="v603_69"></div>
+        </div>
+        
+        <div class="v603_66"></div>
+        
+        <div class="v603_97"></div>
+
+        <span class="v603_98">2024 PEAR</span>
+
+        <div class="v603_2"></div>
+       
+        <div class="v603_80"></div>
+       
+        <div class="v603_81"></div>
+        <span class="v603_7">vs</span>
+        <span class="v603_78">vs</span>
+        <div class="v603_91">
+            <div class="v603_84"></div>
+            <div class="v603_85"></div>
+            <div class="v603_83"></div>
+            <span class="v603_86">vs</span>
+            
+        </div>
+        <div class="v603_99">
+            <div class="v603_100"></div>
+            <div class="v603_101"></div>
+            <div class="v603_102"></div>
+            <span class="v603_103">vs</span>
+        </div>
+        <div class="v603_104">
+            <div class="v603_105"></div>
+            <div class="v603_106"></div>
+            <div class="v603_107"></div>
+            <span class="v603_108">vs</span>
+        </div>
+        <div class="v603_92">
+            <div class="v603_93"></div>
+            <div class="v603_94"></div>
+            <div class="v603_95"></div>
+            <span class="v603_96">vs</span>
+        </div>
+
+        <div class="custom-combobox-container">
+            <select class="custom-combobox" id="combobox-left-1" name="marka">
+                <option value="">Bir marka seçin</option>
+                <% if (brands && brands.length > 0) { %>  <!-- brands verisi var mı kontrol et -->
+                    <% brands.forEach(brand => { %>
+                        <option value="<%= brand %>"><%= brand %></option>
+                    <% }) %>
+                <% } else { %>
+                    <option value="">empty</option> <!-- Eğer veri yoksa göster -->
+                <% } %>
+            </select>
+        </div>
+        
+        <div class="custom-combobox-container2">
+            <select class="custom-combobox2" id="combobox-left-2" name="model">
+                <option value="">Bir model seçin</option>
+                <% if (modeller && modeller.length > 0) { %> <!-- Modeller verisi varsa -->
+                    <%  modeller.forEach(model => { %>
+                        <option value="<%= model %>"><%= model %></option>
+                    <% }) %>
+                <% } else { %>
+                    <option value="">Model bulunamadı</option> <!-- Eğer model verisi yoksa göster -->
+                <% } %>
+            </select>
+        </div>
+        
+
+        <div class="custom-combobox-containersag">
+            <select class="custom-comboboxsag" id="combobox-right-1" name="selectedBrand">
+                <option value="">Bir marka seçin</option>
+                <% if (brands && brands.length > 0) { %>  <!-- brands verisi var mı kontrol et -->
+                    <% brands.forEach(brand => { %>
+                        <option value="<%= brand %>"><%= brand %></option>
+                    <% }) %>
+                <% } else { %>
+                    <option value="">Veri bulunamadı</option> <!-- Eğer veri yoksa göster -->
+                <% } %>
+            </select>
+        </div>
+
+        <div class="custom-combobox-container2sag">
+            <select class="custom-combobox2sag" id="combobox-right-2">
+                <option value="">Bir model seçin</option>
+                <option value="model3">Model 3</option>
+                <option value="model4">Model 4</option>
+            </select>
+        </div>
+
+        <span class="v603_71">Compare Cars</span>
+        <span class="v603_72">compare cars with ease and choose what best for you</span>
+        <div class="v603_73"></div>
+        <div class="v603_74"></div>
+        <span class="v603_75">Most Compared Cars</span>
+
+        <form id="compare-form">
+            <select id="combo-box" name="selection">
+                <option value="option1">Seçenek 1</option>
+                <option value="option2">Seçenek 2</option>
+                <option value="option3">Seçenek 3</option>
+            </select>
+            <button type="button" class="v603_65" id="compare-button">
+                <span class="v603_64">Karşılaştır</span>
+            </button>
+        </form>
+
+        <div id="compare-content" style="display: none;">
+            <p>Karşılaştırma sonuçları burada görünecek.</p>
+        </div>
+    </div>
+
+    <script>
+        
+        
+document.getElementById('combobox-left-1').addEventListener('change', function() {
+    var selectedBrand = this.value;  // Seçilen marka
+
+    if (selectedBrand) {
+        // Eğer marka seçildiyse, AJAX ile o markanın modellerini almak için POST isteği gönderiyoruz
+        fetch('/car_compare', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ marka: selectedBrand })  // Seçilen marka bilgisini JSON olarak gönderiyoruz
+        })
+        .then(response => response.json())  // Sunucudan gelen yanıtı JSON olarak al
+        .then(data => {
+            console.log("Gelen veri:", data);  // Burada veriyi kontrol edin
+            var modelSelect = document.getElementById('combobox-left-2');
+            modelSelect.innerHTML = '<option value="">Bir model seçin</option>';  // Modelleri temizle
+
+            // Yeni modelleri select kutusuna ekle
+            data.modeller.forEach(model => {
+                var option = document.createElement('option');
+                option.value = model;
+                option.textContent = model;
+                modelSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Modeller alınırken hata oluştu:', error);
+        });
+    }
+});
+
+document.getElementById('combobox-right-1').addEventListener('change', function() {
+    var selectedBrand = this.value;  // Seçilen marka
+
+    if (selectedBrand) {
+        // Eğer marka seçildiyse, AJAX ile o markanın modellerini almak için POST isteği gönderiyoruz
+        fetch('/car_compare', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ marka: selectedBrand })  // Seçilen marka bilgisini JSON olarak gönderiyoruz
+        })
+        .then(response => response.json())  // Sunucudan gelen yanıtı JSON olarak al
+        .then(data => {
+            console.log("Gelen veri:", data);  // Burada veriyi kontrol edin
+            var modelSelect = document.getElementById('combobox-right-2');
+            modelSelect.innerHTML = '<option value="">Bir model seçin</option>';  // Modelleri temizle
+
+            // Yeni modelleri select kutusuna ekle
+            data.modeller.forEach(model => {
+                var option = document.createElement('option');
+                option.value = model;
+                option.textContent = model;
+                modelSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Modeller alınırken hata oluştu:', error);
+        });
+    }
+});
+
+
+document.getElementById('compare-button').addEventListener('click', function() {
+   
+    var marka1 = document.getElementById('combobox-left-1').value;
+    var model1 = document.getElementById('combobox-left-2').value;
+    var marka2 = document.getElementById('combobox-right-1').value;
+    var model2 = document.getElementById('combobox-right-2').value;
+
+    if (marka1 && model1 && marka2 && model2) {
+    // URL üzerinden göndermek için verileri birleştiriyoruz
+    const queryParams = new URLSearchParams({
+        marka1: marka1,
+        model1: model1,
+        marka2: marka2,
+        model2: model2
+    });
+
+    // Kullanıcıyı result sayfasına yönlendiriyoruz
+    window.location.href = `/car_compare/result?${queryParams.toString()}`;
+} else {
+    alert('Lütfen her iki marka ve model seçimini yapın.');
+}
+
+
+    
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const comboboxLeft1 = document.getElementById('combobox-left-1');
+    const comboboxLeft2 = document.getElementById('combobox-left-2');
+    const comboboxRight1 = document.getElementById('combobox-right-1');
+    const comboboxRight2 = document.getElementById('combobox-right-2');
+    const compareButton = document.getElementById('compare-button');  // Bu doğru ID olmalı
+    const compareContent = document.getElementById('compare-content');
+
+    function checkSelections() {
+        // Bu kısımda her dört combobox'ın seçili olup olmadığını kontrol ediyoruz
+        if (comboboxLeft1.value && comboboxLeft2.value && comboboxRight1.value && comboboxRight2.value) {
+            console.log("Tüm combobox'lar seçildi.");
+            compareButton.classList.add('enabled');
+            compareButton.style.pointerEvents = 'auto'; // Buton aktif oluyor
+        } else {
+            console.log("Bir veya daha fazla combobox seçilmedi.");
+            compareButton.classList.remove('enabled');
+            compareButton.style.pointerEvents = 'none'; // Buton devre dışı kalıyor
+        }
+    }
+
+    function toggleContent() {
+        // İçeriği gösterme veya gizleme fonksiyonu
+        if (compareContent.style.display === 'none' || compareContent.style.display === '') {
+            compareContent.style.display = 'block';
+        } else {
+            compareContent.style.display = 'none';
+        }
+    }
+
+    // Combobox'ların her biri için change eventini dinliyoruz
+    comboboxLeft1.addEventListener('change', checkSelections);
+    comboboxLeft2.addEventListener('change', checkSelections);
+    comboboxRight1.addEventListener('change', checkSelections);
+    comboboxRight2.addEventListener('change', checkSelections);
+
+    // Karşılaştırma butonuna tıklanıldığında içeriği toggle etmek
+    compareButton.addEventListener('click', function () {
+        if (compareButton.classList.contains('enabled')) {
+            toggleContent();
+        }
+    });
+});
+
+    </script>
+</body>
+</html>

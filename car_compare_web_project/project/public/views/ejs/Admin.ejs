@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Araba Karşılaştırma</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Admin Panel - Araba Karşılaştırma İstatistikleri</h2>
+    
+        <!-- Toplam Karşılaştırma -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-header">Toplam Karşılaştırma</div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="totalComparisons">0</h5>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Grafik Görüntüleme Seçeneği -->
+            <div class="col-md-4">
+                <select id="graphOption" class="form-select">
+                    <option value="top5">En Çok Karşılaştırılan 5</option>
+                    <option value="top3">En Çok Karşılaştırılan 3</option>
+                    <option value="least5">En Az Karşılaştırılan 5</option>
+                    <option value="least3">En Az Karşılaştırılan 3</option>
+                    <option value="custom">Karşılaştırma Çifti</option>
+                </select>
+            </div>
+    
+            <!-- Karşılaştırma Çifti Seçimi -->
+            <div class="col-md-4">
+                <select id="pairOption" class="form-select" disabled>
+                    <!-- Çiftler buraya eklenecek -->
+                </select>
+            </div>
+        </div>
+    
+        <!-- Grafik -->
+        <div class="card" style="height: 500px; width: 100%;">
+            <div class="card-header">Karşılaştırma Grafiği</div>
+            <div class="card-body">
+                <canvas id="comparisonChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+
+    <script>
+        async function fetchData() {
+    try {
+        const response = await fetch('/api/total-comparisons');
+        const totalData = await response.json();
+        document.getElementById('totalComparisons').textContent = totalData.totalComparisons;
+
+        const chartResponse = await fetch('/api/comparison-data');
+        const comparisonData = await chartResponse.json();
+        populatePairOptions(comparisonData);
+        handleGraphUpdate(comparisonData);
+    } catch (error) {
+        console.error("Veri alırken hata oluştu:", error);
+    }
+}
+
+function populatePairOptions(data) {
+    const pairSelect = document.getElementById('pairOption');
+    pairSelect.innerHTML = ''; // Temizle
+
+    data.forEach((item, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${item.firstCar.marka} ${item.firstCar.model} vs ${item.secondCar.marka} ${item.secondCar.model}`;
+        pairSelect.appendChild(option);
+    });
+}
+
+function handleGraphUpdate(data) {
+    const graphOption = document.getElementById('graphOption');
+    const pairSelect = document.getElementById('pairOption');
+
+    graphOption.addEventListener('change', () => {
+        if (graphOption.value === 'custom') {
+            pairSelect.disabled = false;
+        } else {
+            pairSelect.disabled = true;
+            updateGraph(filterData(data, graphOption.value));
+        }
+    });
+
+    pairSelect.addEventListener('change', () => {
+        const selectedPair = data[pairSelect.value];
+        updateGraph([selectedPair]);
+    });
+
+    // Varsayılan grafik: En çok karşılaştırılan 5
+    updateGraph(filterData(data, 'top5'));
+}
+
+function filterData(data, option) {
+    let sortedData = [...data];
+    if (option === 'top5') return sortedData.sort((a, b) => b.scoree - a.scoree).slice(0, 5);
+    if (option === 'top3') return sortedData.sort((a, b) => b.scoree - a.scoree).slice(0, 3);
+    if (option === 'least5') return sortedData.sort((a, b) => a.scoree - b.scoree).slice(0, 5);
+    if (option === 'least3') return sortedData.sort((a, b) => a.scoree - b.scoree).slice(0, 3);
+    return data;
+}
+
+function updateGraph(filteredData) {
+    const labels = filteredData.map(item =>
+        `${item.firstCar.marka} ${item.firstCar.model} vs ${item.secondCar.marka} ${item.secondCar.model}`
+    );
+    const scores = filteredData.map(item => parseInt(item.scoree));
+
+    const ctx = document.getElementById('comparisonChart').getContext('2d');
+    if (window.myChart) window.myChart.destroy(); // Önceki grafiği sil
+    window.myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Karşılaştırma Skorları',
+                data: scores,
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+    });
+}
+
+fetchData();
+
+    </script>
+</body>
+</html>
