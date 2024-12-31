@@ -1,0 +1,91 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #0A0D1C;
+    color: #FFFFFF;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 36px;
+    color: #FFFFFF;
+}
+
+.comparison-table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+.comparison-table th, .comparison-table td {
+    text-align: center;
+    padding: 15px;
+}
+
+.comparison-table th {
+    background-color: #1F2235;
+    font-size: 22px;
+}
+
+.comparison-table td {
+    font-size: 18px;
+    padding: 10px;
+}
+
+.comparison-table tr:nth-child(odd) {
+    background-color: #151828;
+}
+
+.comparison-table tr:nth-child(even) {
+    background-color: #1B1F30;
+}
+
+.comparison-table .better {
+    color: #00FF00;
+    font-weight: bold;
+}
+
+.comparison-table .worse {
+    color: #FF0000;
+    font-weight: bold;
+}
+
+.arrows {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.arrows.up {
+    color: #00FF00;
+}
+
+.arrows.down {
+    color: #FF0000;
+}
+
+.compare-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #1F2235;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.compare-button:hover {
+    background-color: #151828;
+    transform: scale(1.05);
+}

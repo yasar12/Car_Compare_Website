@@ -21,8 +21,24 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Tarih Seçimi ve Ziyaretçi Sayısı -->
+            <div class="col-md-4">
+                <input type="date" id="startDate" class="form-control mb-2" placeholder="Başlangıç Tarihi" max="<%= new Date().toISOString().split('T')[0] %>">
+                <input type="date" id="endDate" class="form-control" placeholder="Bitiş Tarihi" max="<%= new Date().toISOString().split('T')[0] %>">
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-header">Ziyaretçi Sayısı</div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="visitorCount">0</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
     
-            <!-- Grafik Görüntüleme Seçeneği -->
+        <!-- Grafik Görüntüleme Seçeneği -->
+        <div class="row mb-3">
             <div class="col-md-4">
                 <select id="graphOption" class="form-select">
                     <option value="top5">En Çok Karşılaştırılan 5</option>
@@ -53,88 +69,115 @@
 
     <script>
         async function fetchData() {
-    try {
-        const response = await fetch('/api/total-comparisons');
-        const totalData = await response.json();
-        document.getElementById('totalComparisons').textContent = totalData.totalComparisons;
+            try {
+                const response = await fetch('/api/total-comparisons');
+                const totalData = await response.json();
+                document.getElementById('totalComparisons').textContent = totalData.totalComparisons;
 
-        const chartResponse = await fetch('/api/comparison-data');
-        const comparisonData = await chartResponse.json();
-        populatePairOptions(comparisonData);
-        handleGraphUpdate(comparisonData);
-    } catch (error) {
-        console.error("Veri alırken hata oluştu:", error);
-    }
-}
+                const chartResponse = await fetch('/api/comparison-data');
+                const comparisonData = await chartResponse.json();
+                populatePairOptions(comparisonData);
+                handleGraphUpdate(comparisonData);
 
-function populatePairOptions(data) {
-    const pairSelect = document.getElementById('pairOption');
-    pairSelect.innerHTML = ''; // Temizle
-
-    data.forEach((item, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = `${item.firstCar.marka} ${item.firstCar.model} vs ${item.secondCar.marka} ${item.secondCar.model}`;
-        pairSelect.appendChild(option);
-    });
-}
-
-function handleGraphUpdate(data) {
-    const graphOption = document.getElementById('graphOption');
-    const pairSelect = document.getElementById('pairOption');
-
-    graphOption.addEventListener('change', () => {
-        if (graphOption.value === 'custom') {
-            pairSelect.disabled = false;
-        } else {
-            pairSelect.disabled = true;
-            updateGraph(filterData(data, graphOption.value));
+            } catch (error) {
+                console.error("Veri alırken hata oluştu:", error);
+            }
         }
-    });
 
-    pairSelect.addEventListener('change', () => {
-        const selectedPair = data[pairSelect.value];
-        updateGraph([selectedPair]);
-    });
+        async function fetchVisitorCount(startDate, endDate) {
+            try {
+                const visitorResponse = await fetch(`/api/visitor-count?startDate=${startDate}&endDate=${endDate}`);
+                const visitorData = await visitorResponse.json();
+                document.getElementById('visitorCount').textContent = visitorData.visitorCount;
+            } catch (error) {
+                console.error("Ziyaretçi verileri alınırken hata oluştu:", error);
+            }
+        }
 
-    // Varsayılan grafik: En çok karşılaştırılan 5
-    updateGraph(filterData(data, 'top5'));
-}
+        document.getElementById('startDate').addEventListener('change', () => {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            if (startDate && endDate) {
+                fetchVisitorCount(startDate, endDate);
+            }
+        });
 
-function filterData(data, option) {
-    let sortedData = [...data];
-    if (option === 'top5') return sortedData.sort((a, b) => b.scoree - a.scoree).slice(0, 5);
-    if (option === 'top3') return sortedData.sort((a, b) => b.scoree - a.scoree).slice(0, 3);
-    if (option === 'least5') return sortedData.sort((a, b) => a.scoree - b.scoree).slice(0, 5);
-    if (option === 'least3') return sortedData.sort((a, b) => a.scoree - b.scoree).slice(0, 3);
-    return data;
-}
+        document.getElementById('endDate').addEventListener('change', () => {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            if (startDate && endDate) {
+                fetchVisitorCount(startDate, endDate);
+            }
+        });
 
-function updateGraph(filteredData) {
-    const labels = filteredData.map(item =>
-        `${item.firstCar.marka} ${item.firstCar.model} vs ${item.secondCar.marka} ${item.secondCar.model}`
-    );
-    const scores = filteredData.map(item => parseInt(item.scoree));
+        function populatePairOptions(data) {
+            const pairSelect = document.getElementById('pairOption');
+            pairSelect.innerHTML = ''; // Temizle
 
-    const ctx = document.getElementById('comparisonChart').getContext('2d');
-    if (window.myChart) window.myChart.destroy(); // Önceki grafiği sil
-    window.myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Karşılaştırma Skorları',
-                data: scores,
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-    });
-}
+            data.forEach((item, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${item.firstCar.marka} ${item.firstCar.model} vs ${item.secondCar.marka} ${item.secondCar.model}`;
+                pairSelect.appendChild(option);
+            });
+        }
 
-fetchData();
+        function handleGraphUpdate(data) {
+            const graphOption = document.getElementById('graphOption');
+            const pairSelect = document.getElementById('pairOption');
+
+            graphOption.addEventListener('change', () => {
+                if (graphOption.value === 'custom') {
+                    pairSelect.disabled = false;
+                } else {
+                    pairSelect.disabled = true;
+                    updateGraph(filterData(data, graphOption.value));
+                }
+            });
+
+            pairSelect.addEventListener('change', () => {
+                const selectedPair = data[pairSelect.value];
+                updateGraph([selectedPair]);
+            });
+
+            // Varsayılan grafik: En çok karşılaştırılan 5
+            updateGraph(filterData(data, 'top5'));
+        }
+
+        function filterData(data, option) {
+            let sortedData = [...data];
+            if (option === 'top5') return sortedData.sort((a, b) => b.scoree - a.scoree).slice(0, 5);
+            if (option === 'top3') return sortedData.sort((a, b) => b.scoree - a.scoree).slice(0, 3);
+            if (option === 'least5') return sortedData.sort((a, b) => a.scoree - b.scoree).slice(0, 5);
+            if (option === 'least3') return sortedData.sort((a, b) => a.scoree - b.scoree).slice(0, 3);
+            return data;
+        }
+
+        function updateGraph(filteredData) {
+            const labels = filteredData.map(item =>
+                `${item.firstCar.marka} ${item.firstCar.model} vs ${item.secondCar.marka} ${item.secondCar.model}`
+            );
+            const scores = filteredData.map(item => parseInt(item.scoree));
+
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            if (window.myChart) window.myChart.destroy(); // Önceki grafiği sil
+            window.myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Karşılaştırma Skorları',
+                        data: scores,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        fetchData();
 
     </script>
 </body>

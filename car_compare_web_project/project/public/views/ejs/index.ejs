@@ -44,25 +44,28 @@
             <div class="v603_85"></div>
             <div class="v603_83"></div>
             <span class="v603_86">vs</span>
-            
+            <span class="v603_150" onclick="handleClick(0)"><%=params[0].firstCar.marka+" "+params[0].firstCar.model%> vs <%=params[0].secondCar.marka+" "+params[0].secondCar.model%></span>
         </div>
         <div class="v603_99">
             <div class="v603_100"></div>
             <div class="v603_101"></div>
             <div class="v603_102"></div>
             <span class="v603_103">vs</span>
+            <span class="v603_151" onclick="handleClick(1)"><%=params[1].firstCar.marka+" "+params[1].firstCar.model%> vs <%=params[1].secondCar.marka+" "+params[1].secondCar.model%></span>
         </div>
         <div class="v603_104">
             <div class="v603_105"></div>
             <div class="v603_106"></div>
             <div class="v603_107"></div>
             <span class="v603_108">vs</span>
+            <span class="v603_154" onclick="handleClick(2)"><%=params[2].firstCar.marka+" "+params[2].firstCar.model%> vs <%=params[2].secondCar.marka+" "+params[2].secondCar.model%></span>
         </div>
         <div class="v603_92">
             <div class="v603_93"></div>
             <div class="v603_94"></div>
             <div class="v603_95"></div>
             <span class="v603_96">vs</span>
+            <span class="v603_155" onclick="handleClick(3)"><%=params[3].firstCar.marka+" "+params[3].firstCar.model%> vs <%=params[3].secondCar.marka+" "+params[3].secondCar.model%></span>
         </div>
 
         <div class="custom-combobox-container">
@@ -134,7 +137,7 @@
             <p>Karşılaştırma sonuçları burada görünecek.</p>
         </div>
     </div>
-
+    <div id="params-container" data-params='<%= JSON.stringify(params) %>'></div>
     <script>
         
         
@@ -203,6 +206,24 @@ document.getElementById('combobox-right-1').addEventListener('change', function(
 });
 
 
+const params = JSON.parse(document.getElementById("params-container").dataset.params);
+function handleClick(index) {
+   
+    const firstCar = params[index].firstCar;
+    const secondCar = params[index].secondCar;
+
+    const queryParams = new URLSearchParams({
+        marka1: firstCar.marka,
+        model1: firstCar.model,
+        marka2: secondCar.marka,
+        model2: secondCar.model
+    });
+
+    // Kullanıcıyı result sayfasına yönlendiriyoruz
+    window.location.href = `/car_compare/resultgpt?${queryParams.toString()}`;
+}
+
+
 document.getElementById('compare-button').addEventListener('click', function() {
    
     var marka1 = document.getElementById('combobox-left-1').value;
@@ -220,7 +241,7 @@ document.getElementById('compare-button').addEventListener('click', function() {
     });
 
     // Kullanıcıyı result sayfasına yönlendiriyoruz
-    window.location.href = `/car_compare/result?${queryParams.toString()}`;
+    window.location.href = `/car_compare/resultgpt?${queryParams.toString()}`;
 } else {
     alert('Lütfen her iki marka ve model seçimini yapın.');
 }
