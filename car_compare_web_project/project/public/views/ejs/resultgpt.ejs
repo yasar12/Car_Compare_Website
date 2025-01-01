@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karşılaştırma Sonuçları</title>
+    <link rel="stylesheet" href="/views/css/resultgpt.css">
+</head>
+<body>
+    <div class="container">
+       
+
+        <h1>Karşılaştırma Sonuçları</h1>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th><%= carname1 %></th>
+                    <th>Özellik</th>
+                    <th><%= carname2 %></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (features === null) { %>
+                    <tr>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                <% } else { %>
+                    <% features.forEach(feature => { %>
+                        <tr>
+                            <% if (feature.key === 'price' || feature.key === 'weight' || feature.key === 'zero_to_sixty' || feature.key === 'zero_to_hundred' || feature.key === 'plb_ratio') { %>
+                                <% if (parseFloat(car1[feature.key]) < parseFloat(car2[feature.key])) { %>
+                                    <td class="better"><%= car1[feature.key] %> <span class="arrows up">▲</span></td>
+                                    <td><%= feature.name %></td>
+                                    <td class="worse"><%= car2[feature.key] %> <span class="arrows down">▼</span></td>
+                                <% } else if (parseFloat(car1[feature.key]) > parseFloat(car2[feature.key])) { %>
+                                    <td class="worse"><%= car1[feature.key] %> <span class="arrows down">▼</span></td>
+                                    <td><%= feature.name %></td>
+                                    <td class="better"><%= car2[feature.key] %> <span class="arrows up">▲</span></td>
+                                <% } else { %>
+                                    <td class="equal"><%= car1[feature.key] %></td>
+                                    <td><%= feature.name %></td>
+                                    <td class="equal"><%= car2[feature.key] %></td>
+                                <% } %>
+                            <% } else { %>
+                                <% if (parseFloat(car1[feature.key]) > parseFloat(car2[feature.key])) { %>
+                                    <td class="better"><%= car1[feature.key] %> <span class="arrows up">▲</span></td>
+                                    <td><%= feature.name %></td>
+                                    <td class="worse"><%= car2[feature.key] %> <span class="arrows down">▼</span></td>
+                                <% } else if (parseFloat(car1[feature.key]) < parseFloat(car2[feature.key])) { %>
+                                    <td class="worse"><%= car1[feature.key] %> <span class="arrows down">▼</span></td>
+                                    <td><%= feature.name %></td>
+                                    <td class="better"><%= car2[feature.key] %> <span class="arrows up">▲</span></td>
+                                <% } else { %>
+                                    <td class="equal"><%= car1[feature.key] %></td>
+                                    <td><%= feature.name %></td>
+                                    <td class="equal"><%= car2[feature.key] %></td>
+                                <% } %>
+                            <% } %>
+                        </tr>
+                    <% }) %>
+                <% } %>
+            </tbody>
+        </table>
+
+         <div class="button-wrapper">
+            <a href="/car_compare" class="compare-button">Tekrar Karşılaştır</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Comparison Results</title>
+    <link href="/views/css/result.css" rel="stylesheet">
+</head>
+<body>
+    <div class="comparison-container">
+        <!-- Üstteki Karşılaştır Butonu -->
+        <div class="button-wrapper">
+            <a href="/car_compare" class="compare-button">Tekrar Karşılaştır</a>
+        </div>
+
+        <h1 class="comparison-header">Car Comparison Results</h1>
+
+        <!-- Araba Başlıkları -->
+        <div class="car-identifiers">
+            <div class="car-identifier">
+                <h2>car1: <%= carname1 %> </h2>
+            </div>
+            <div class="car-identifier">
+                <h2>car2: <%= carname2 %> </h2>
+            </div>
+        </div>
+
+        <% features.forEach(feature => { %>
+            <div class="comparison-block">
+                <h3 class="feature-name"><%= feature.name %></h3>
+                <div class="feature-comparison">
+                    <% if (feature.key === 'price' || feature.key === 'weight' || feature.key === 'zero_to_sixty' || feature.key === 'zero_to_hundred' || feature.key === 'plb_ratio') { %>
+                        <% if (parseFloat(car1[feature.key]) < parseFloat(car2[feature.key])) { %>
+                            <div class="car-column better">
+                                <p><%= car1[feature.key] %></p>
+                                <span class="result-icon up"></span>
+                            </div>
+                            <div class="car-column">
+                                <p><%= car2[feature.key] %></p>
+                                <span class="result-icon down"></span>
+                            </div>
+                        <% } else if (parseFloat(car1[feature.key]) > parseFloat(car2[feature.key])) { %>
+                            <div class="car-column">
+                                <p><%= car1[feature.key] %></p>
+                                <span class="result-icon down"></span>
+                            </div>
+                            <div class="car-column better">
+                                <p><%= car2[feature.key] %></p>
+                                <span class="result-icon up"></span>
+                            </div>
+                        <% } else { %>
+                            <div class="car-column equal">
+                                <p><%= car1[feature.key] %></p>
+                                <span class="result-icon equal-line"></span>
+                            </div>
+                            <div class="car-column equal">
+                                <p><%= car2[feature.key] %></p>
+                                <span class="result-icon equal-line"></span>
+                            </div>
+                        <% } %>
+                    <% } else { %>
+                        <% if (parseFloat(car1[feature.key]) > parseFloat(car2[feature.key])) { %>
+                            <div class="car-column better">
+                                <p><%= car1[feature.key] %></p>
+                                <span class="result-icon up"></span>
+                            </div>
+                            <div class="car-column">
+                                <p><%= car2[feature.key] %></p>
+                                <span class="result-icon down"></span>
+                            </div>
+                        <% } else if (parseFloat(car1[feature.key]) < parseFloat(car2[feature.key])) { %>
+                            <div class="car-column">
+                                <p><%= car1[feature.key] %></p>
+                                <span class="result-icon down"></span>
+                            </div>
+                            <div class="car-column better">
+                                <p><%= car2[feature.key] %></p>
+                                <span class="result-icon up"></span>
+                            </div>
+                        <% } else { %>
+                            <div class="car-column equal">
+                                <p><%= car1[feature.key] %></p>
+                                <span class="result-icon equal-line"></span>
+                            </div>
+                            <div class="car-column equal">
+                                <p><%= car2[feature.key] %></p>
+                                <span class="result-icon equal-line"></span>
+                            </div>
+                        <% } %>
+                    <% } %>
+                </div>
+            </div>
+            <% }) %>
+            
+        <!-- Alttaki Karşılaştır Butonu -->
+        <div class="button-wrapper">
+            <a href="/car_compare" class="compare-button">Tekrar Karşılaştır</a>
+        </div>
+    </div>
+</body>
+</html>
