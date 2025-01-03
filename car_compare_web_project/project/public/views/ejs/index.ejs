@@ -44,29 +44,49 @@
             <div class="v603_85"></div>
             <div class="v603_83"></div>
             <span class="v603_86">vs</span>
-            <span class="v603_150" onclick="handleClick(0)"><%=params[0].firstCar.marka+" "+params[0].firstCar.model%> vs <%=params[0].secondCar.marka+" "+params[0].secondCar.model%></span>
+            <% if (params && params[0]) { %>
+                <span class="v603_150" onclick="handleClick(0)"><%= params[0].firstCar.marka + " " + params[0].firstCar.model %> vs <%= params[0].secondCar.marka + " " + params[0].secondCar.model %></span>
+            <% } else { %>
+                <span class="v603_150">Veri bulunamadı</span>
+            <% } %>
         </div>
+        
         <div class="v603_99">
             <div class="v603_100"></div>
             <div class="v603_101"></div>
             <div class="v603_102"></div>
             <span class="v603_103">vs</span>
-            <span class="v603_151" onclick="handleClick(1)"><%=params[1].firstCar.marka+" "+params[1].firstCar.model%> vs <%=params[1].secondCar.marka+" "+params[1].secondCar.model%></span>
+            <% if (params && params[1]) { %>
+                <span class="v603_151" onclick="handleClick(1)"><%= params[1].firstCar.marka + " " + params[1].firstCar.model %> vs <%= params[1].secondCar.marka + " " + params[1].secondCar.model %></span>
+            <% } else { %>
+                <span class="v603_151">Veri bulunamadı</span>
+            <% } %>
         </div>
+        
         <div class="v603_104">
             <div class="v603_105"></div>
             <div class="v603_106"></div>
             <div class="v603_107"></div>
             <span class="v603_108">vs</span>
-            <span class="v603_154" onclick="handleClick(2)"><%=params[2].firstCar.marka+" "+params[2].firstCar.model%> vs <%=params[2].secondCar.marka+" "+params[2].secondCar.model%></span>
+            <% if (params && params[2]) { %>
+                <span class="v603_154" onclick="handleClick(2)"><%= params[2].firstCar.marka + " " + params[2].firstCar.model %> vs <%= params[2].secondCar.marka + " " + params[2].secondCar.model %></span>
+            <% } else { %>
+                <span class="v603_154">Veri bulunamadı</span>
+            <% } %>
         </div>
+        
         <div class="v603_92">
             <div class="v603_93"></div>
             <div class="v603_94"></div>
             <div class="v603_95"></div>
             <span class="v603_96">vs</span>
-            <span class="v603_155" onclick="handleClick(3)"><%=params[3].firstCar.marka+" "+params[3].firstCar.model%> vs <%=params[3].secondCar.marka+" "+params[3].secondCar.model%></span>
+            <% if (params && params[3]) { %>
+                <span class="v603_155" onclick="handleClick(3)"><%= params[3].firstCar.marka + " " + params[3].firstCar.model %> vs <%= params[3].secondCar.marka + " " + params[3].secondCar.model %></span>
+            <% } else { %>
+                <span class="v603_155">Veri bulunamadı</span>
+            <% } %>
         </div>
+        
 
         <div class="custom-combobox-container">
             <select class="custom-combobox" id="combobox-left-1" name="marka">

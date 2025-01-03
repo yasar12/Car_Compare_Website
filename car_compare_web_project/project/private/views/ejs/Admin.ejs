@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Araba Karşılaştırma</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #343a40;
+            color: #fff;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .sidebar h4 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .sidebar button {
+            color: #fff;
+            background-color: transparent;
+            border: none;
+            text-align: left;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s, padding-left 0.3s;
+        }
+        .sidebar button:hover {
+            background-color: #495057;
+            padding-left: 15px;
+        }
+        .sidebar button:focus {
+            outline: none;
+            background-color: #6c757d;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h4>Admin Panel</h4>
+        <button class="btn" onclick="showTab('tab-total-comparisons')">📊 Toplam Karşılaştırma</button>
+        <button class="btn" onclick="showTab('tab-visitor-count')">👥 Ziyaretçi Sayısı</button>
+        <button class="btn" onclick="showTab('tab-comparison-graph')">📈 Karşılaştırma Grafiği</button>
+    </div>
+    <div class="content">
+        <div class="tab-content">
+            <div class="tab-pane" id="tab-total-comparisons" style="display: block;">
+                <h2>Toplam Karşılaştırma</h2>
+                <div class="mb-3">
+                    <label for="comparisonStartDate" class="form-label">Başlangıç Tarihi</label>
+                    <input type="date" id="comparisonStartDate" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="comparisonEndDate" class="form-label">Bitiş Tarihi</label>
+                    <input type="date" id="comparisonEndDate" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="timeRange" class="form-label">Zaman Aralığı</label>
+                    <select id="timeRange" class="form-select">
+                        <option value="monthly">Aylık</option>
+                        <option value="yearly">Yıllık</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" onclick="filterComparisons()">Filtrele</button>
+                <div class="card mt-3">
+                    <div class="card-header">Toplam Karşılaştırma Grafiği</div>
+                    <div class="card-body">
+                        <canvas id="totalComparisonChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card text-white bg-primary mt-3">
+                    <div class="card-header">Toplam Karşılaştırma</div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="totalComparisons">0</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="tab-visitor-count" style="display: none;">
+                <h2>Ziyaretçi Sayısı</h2>
+                <input type="date" id="startDate" class="form-control mb-2" placeholder="Başlangıç Tarihi">
+                <input type="date" id="endDate" class="form-control mb-2" placeholder="Bitiş Tarihi">
+                <div class="mb-3">
+                    <label for="timeRange" class="form-label">Zaman Aralığı</label>
+                    <select id="timeRange" class="form-select">
+                        <option value="daily">Günlük</option>
+                        <option value="monthly">Aylık</option>
+                        <option value="yearly">Yıllık</option>
+                    </select>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-header">Ziyaretçi Grafiği</div>
+                    <div class="card-body">
+                        <canvas id="visitorChart"></canvas>
+                    </div>
+                </div>
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-header">Ziyaretçi Sayısı</div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="visitorCount">0</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="tab-comparison-graph" style="display: none;">
+                <h2>Karşılaştırma Grafiği</h2>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <select id="graphOption" class="form-select">
+                            <option value="top5">En Çok Karşılaştırılan 5</option>
+                            <option value="top3">En Çok Karşılaştırılan 3</option>
+                            <option value="least5">En Az Karşılaştırılan 5</option>
+                            <option value="least3">En Az Karşılaştırılan 3</option>
+                            <option value="custom">Karşılaştırma Çifti</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="pairOption" class="form-select" disabled></select>
+                    </div>
+                </div>
+                <div class="card" style="height: 500px; width: 100%;">
+                    <!-- Bu kısmı güncelliyoruz -->
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>Karşılaştırma Grafiği</span>
+                        <!-- Güncelle Butonu Buraya Ekleniyor -->
+                        <button class="btn btn-success" onclick="updateCarData()">Araba Verilerini Güncelle</button>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+
+    <script>
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-pane');
+            tabs.forEach(tab => {
+                tab.style.display = 'none';
+            });
+            document.getElementById(tabId).style.display = 'block';
+        }
+
+        async function fetchData() {
+            try {
+                const response = await fetch('/admin/api/total-comparisons');
+                if (!response.ok) throw new Error('Toplam karşılaştırma verisi alınamadı.');
+                const totalData = await response.json();
+                document.getElementById('totalComparisons').textContent = totalData.totalComparisons || 0;
+
+                const chartResponse = await fetch('/admin/api/comparison-data');
+                if (!chartResponse.ok) throw new Error('Karşılaştırma verisi alınamadı.');
+                const comparisonData = await chartResponse.json();
+
+                if (!comparisonData || comparisonData.length === 0) {
+                    console.warn("Karşılaştırma verisi boş.");
+                    document.getElementById('comparisonChart').textContent = "Veri bulunamadı.";
+                } else {
+                    populatePairOptions(comparisonData);
+                    handleGraphUpdate(comparisonData);
+                }
+            } catch (error) {
+                console.error("Veri alırken hata oluştu:", error);
+                alert("Veri alınamadı. Lütfen daha sonra tekrar deneyin.");
+            }
+        }
+
+        async function fetchVisitorCount(startDate, endDate, mode) {
+    try {
+        const visitorResponse = await fetch(`/admin/api/visitor-count?startDate=${startDate}&endDate=${endDate}&mode=${mode}`);
+        if (!visitorResponse.ok) throw new Error('Ziyaretçi verisi alınamadı.');
+
+        const visitorData = await visitorResponse.json();
+
+        // Gelen verilerden toplam ziyaretçi sayısını hesapla
+        const totalVisitors = visitorData.reduce((acc, item) => acc + parseInt(item.visitorCount, 10), 0);
+
+        // Toplam ziyaretçi sayısını ekrana yazdır
+        document.getElementById('visitorCount').textContent = totalVisitors || 0;
+
+        // Grafiği güncelle
+        updateVisitorChart(visitorData, mode);
+    } catch (error) {
+        console.error("Ziyaretçi verileri alınırken hata oluştu:", error);
+        document.getElementById('visitorCount').textContent = "Veri bulunamadı.";
+    }
+}
+
+async function updateCarData() {
+        try {
+            const response = await fetch('/admin/api/run-script', { method: 'POST' });
+            const result = await response.json();
+            if (result.success) {
+                alert('Başarılı! Araba verileri güncellendi.');
+            } else {
+                alert('Hata oluştu: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Güncelleme sırasında hata:', error);
+            alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+        }
+    }
+
+        function updateVisitorChart(data) {
+    const ctx = document.getElementById('visitorChart').getContext('2d');
+
+    // Mevcut grafik varsa yok et
+    if (window.visitorChart) {
+        if (typeof window.visitorChart.destroy === 'function') {
+            window.visitorChart.destroy();
+        }
+    }
+
+    // Etiketler ve veriler
+    const labels = data.map(item => `${item.year}-${String(item.month).padStart(2, '0')}`); // Yıl-Ay formatı
+    const counts = data.map(item => parseInt(item.visitorCount, 10)); // Ziyaretçi sayıları
+
+    // Yeni grafik oluştur
+    window.visitorChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Ziyaretçi Sayısı',
+                data: counts,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { title: { display: true, text: 'Yıl-Ay' } },
+                y: { title: { display: true, text: 'Ziyaretçi Sayısı' } }
+            }
+        }
+    });
+}
+
+
+
+        
+document.getElementById('timeRange').addEventListener('change', () => {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const mode = document.getElementById('timeRange').value;
+    if (startDate && endDate && mode) {
+        fetchVisitorCount(startDate, endDate, mode);
+    }
+});
+
+document.getElementById('startDate').addEventListener('change', () => {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const mode = document.getElementById('timeRange').value;
+    if (startDate && endDate && mode) {
+        fetchVisitorCount(startDate, endDate, mode);
+    }
+});
+
+document.getElementById('endDate').addEventListener('change', () => {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const mode = document.getElementById('timeRange').value;
+    if (startDate && endDate && mode) {
+        fetchVisitorCount(startDate, endDate, mode);
+    }
+});
+
+
+        function populatePairOptions(data) {
+            const pairSelect = document.getElementById('pairOption');
+            pairSelect.innerHTML = ''; // Temizle
+
+            if (!data || data.length === 0) {
+                const option = document.createElement('option');
+                option.textContent = "Veri bulunamadı.";
+                option.disabled = true;
+                pairSelect.appendChild(option);
+                return;
+            }
+
+            data.forEach((item, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${item.firstCar.marka || 'Bilinmiyor'} ${item.firstCar.model || 'Bilinmiyor'} vs ${item.secondCar.marka || 'Bilinmiyor'} ${item.secondCar.model || 'Bilinmiyor'}`;
+                pairSelect.appendChild(option);
+            });
+        }
+
+        function handleGraphUpdate(data) {
+            const graphOption = document.getElementById('graphOption');
+            const pairSelect = document.getElementById('pairOption');
+
+            graphOption.addEventListener('change', () => {
+                if (graphOption.value === 'custom') {
+                    pairSelect.disabled = false;
+                } else {
+                    pairSelect.disabled = true;
+                    updateGraph(filterData(data, graphOption.value));
+                }
+            });
+
+            pairSelect.addEventListener('change', () => {
+                const selectedPair = data[pairSelect.value];
+                updateGraph([selectedPair]);
+            });
+
+            updateGraph(filterData(data, 'top5'));
+        }
+
+        function filterData(data, option) {
+            let sortedData = [...data];
+            if (option === 'top5') return sortedData.sort((a, b) => b.scoree - a.scoree).slice(0, 5);
+            if (option === 'top3') return sortedData.sort((a, b) => b.scoree - a.scoree).slice(0, 3);
+            if (option === 'least5') return sortedData.sort((a, b) => a.scoree - b.scoree).slice(0, 5);
+            if (option === 'least3') return sortedData.sort((a, b) => a.scoree - b.scoree).slice(0, 3);
+            return data;
+        }
+
+        function updateGraph(filteredData) {
+            if (!filteredData || filteredData.length === 0) {
+                const ctx = document.getElementById('comparisonChart').getContext('2d');
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                document.getElementById('comparisonChart').textContent = "Grafik için yeterli veri bulunamadı.";
+                return;
+            }
+
+            const labels = filteredData.map(item =>
+                `${item.firstCar.marka || 'Bilinmiyor'} ${item.firstCar.model || 'Bilinmiyor'} vs ${item.secondCar.marka || 'Bilinmiyor'} ${item.secondCar.model || 'Bilinmiyor'}`
+            );
+            const scores = filteredData.map(item => parseInt(item.scoree) || 0);
+
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            if (window.myChart) window.myChart.destroy();
+            window.myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Karşılaştırma Skorları',
+                        data: scores,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        async function filterComparisons() {
+    const startDate = document.getElementById('comparisonStartDate').value;
+    const endDate = document.getElementById('comparisonEndDate').value;
+    const timeRange = document.getElementById('timeRange').value;
+
+    if (!startDate || !endDate || !timeRange) {
+        alert('Lütfen tüm alanları doldurun.');
+        return;
+    }
+
+    try {
+        // GET isteği URL'ini oluştur
+        const url = `/admin/api/total-comparisons-data?startDate=${startDate}&endDate=${endDate}&mode=${timeRange}`;
+        const response = await fetch(url);
+
+        if (!response.ok) throw new Error('Veri alınamadı.');
+
+        const data = await response.json();
+
+        if (data.length > 0) {
+            updateTotalComparisonChart(data, timeRange);
+        } else {
+            alert("Seçilen tarihler için veri bulunamadı.");
+        }
+    } catch (error) {
+        console.error('GET isteği sırasında hata:', error);
+        alert('Bir hata oluştu.');
+    }
+}
+
+
+        function updateTotalComparisonChart(data, mode) {
+    const ctx = document.getElementById('totalComparisonChart').getContext('2d');
+
+    // Mevcut grafik varsa önce yok et
+    if (window.totalComparisonChart) {
+        if (typeof window.totalComparisonChart.destroy === 'function') {
+            window.totalComparisonChart.destroy();
+        }
+    }
+
+    // Grafik için etiketler ve veriler
+    let labels, datasetLabel, datasetData;
+
+    if (mode === 'yearly') {
+        labels = data.map(item => item.year); // Yıllar
+        datasetLabel = 'Yıllık Toplam Karşılaştırma Sayısı';
+        datasetData = data.map(item => item.totalComparisons); // Yıllık toplam karşılaştırmalar
+    } else if (mode === 'monthly') {
+        labels = data.map(item => `${item.year}-${String(item.month).padStart(2, '0')}`); // Yıl-Ay formatı
+        datasetLabel = 'Aylık Toplam Skor';
+        datasetData = data.map(item => item.totalScore); // Aylık toplam skorlar
+    } else {
+        console.error("Bilinmeyen mod:", mode);
+        return;
+    }
+
+    // Yeni grafik oluştur
+    window.totalComparisonChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: datasetLabel,
+                data: datasetData,
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: { display: true, text: mode === 'yearly' ? 'Yıllar' : 'Aylar' }
+                },
+                y: {
+                    title: { display: true, text: 'Karşılaştırma Sayısı / Skor' }
+                }
+            }
+        }
+    });
+}
+
+
+
+        fetchData();
+        showTab('tab-total-comparisons');
+    </script>
+</body>
+</html>
