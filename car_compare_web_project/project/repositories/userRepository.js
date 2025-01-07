@@ -2,6 +2,7 @@ const { connectDB } = require('../config/database');
 const  Cars = require('../model/arabalar'); 
 const  teknik = require('../model/teknik_özellikler'); 
 const  compare_scored = require('../model/Compared_cars');
+const  visitor_history = require('../model/ziyaretci_gecmisi');
 const { DataTypes, or } = require('sequelize');
 const sequelize = require('../config/database').sequelize;
 const { Op } = require('sequelize');
@@ -25,28 +26,30 @@ const getMarkalar = async () => {
   }
 };
 
-
+// Verilen model adına göre model bilgilerini getirir.
 const getmodelid = async (model1) => {
   try {
     const car = await Cars.findOne({
-      attributes: ['id'],  // Yalnızca id alanını alıyoruz
-      where: { model: model1 },  // Belirli bir modele ait veriyi almak
-      raw: true,  // Sadece veri almak için raw true kullanıyoruz
+      attributes: ['id'], // Yalnızca id alanını alıyoruz
+      where: { model: model1 }, // Belirli bir modele ait veriyi almak
+      raw: true, // Sadece veri almak için raw true kullanıyoruz
     });
-    
+
     // Eğer model bulunduysa, id'yi döndürüyoruz
     if (car) {
       return car.id;
     } else {
-      throw new Error(`Model ${model1} bulunamadı`);
+      console.warn(`Geçersiz model: ${model1}`);
+      return null; // Geçersiz modelde null döndür
     }
   } catch (error) {
     console.error(`${model1} modeli için id alınırken hata oluştu:`, error);
-    throw error;
+    return null; // Hata durumunda null döndür
   }
 };
 
 
+// Verilen ID'lere göre araçları getirir.
   const getCarsByIds = async(id1)=> {
     try {
         const cars = await teknik.findAll({
@@ -60,7 +63,7 @@ const getmodelid = async (model1) => {
         console.error('Veritabanı hatası:', error);
     }
 }
-
+// Belirtilen araç adlarına göre araçları getirir.
 const getCarsByIdsname = async(id1)=> {
   try {
       const cars = await Cars.findAll({
@@ -75,55 +78,69 @@ const getCarsByIdsname = async(id1)=> {
       console.error('Veritabanı hatası:', error);
   }
 }
+// İki araç modelini karşılaştırmak üzere gönderir.
+const send_compared_cars = async (model1, model2) => {
+  try {
+      const car1 = await getmodelid(model1);
+      const car2 = await getmodelid(model2);
+      const now = new Date();
+      const turkeyTime = new Date(now.getTime() + (3 * 60 - now.getTimezoneOffset()) * 60000);
+      const today = turkeyTime.toISOString().split('T')[0];
 
-const send_compared_cars = async (model1,model2) => {
-    try {
-        const car1 = await getmodelid(model1);
-        const car2 = await getmodelid(model2);
-        const  value=await compare_scored.findOne(
-           // Güncellenecek alanlar
-          {
-            attributes: ['compare_score'],
-            where: {
-              [Op.or]: [
-                { first_car_id: car1, second_car_id: car2},
-                { first_car_id: car2, second_car_id: car1},
+    console.log(today);
+
+      console.log(today);
+      // Bugüne ait kaydı bulun
+      const value = await compare_scored.findOne({
+          attributes: ['compare_score'],
+          where: {
+              [Op.and]: [
+                  { date: today }, // Bugün tarihi kontrolü
+                  {
+                      [Op.or]: [
+                          { first_car_id: car1, second_car_id: car2 },
+                          { first_car_id: car2, second_car_id: car1 },
+                      ],
+                  },
               ],
-            },
-          }
-        );
+          },
+      });
 
-      
-       if (value === null) {
-        await compare_scored.create({
-          first_car_id: car1,
-          second_car_id: car2,
-          compare_score: 1
-        })
-       }
-        await compare_scored.update(
-          { compare_score: parseInt(value.compare_score)+1 }, // Güncellenecek alanlar
-          {
-            where: {
-              [Op.or]: [
-                { first_car_id: car1, second_car_id: car2},
-                { first_car_id: car2, second_car_id: car1},
-              ],
-            },
-          }
-        );
-      
-        
-      
+      if (value === null) {
+          // Eğer bugüne ait kayıt yoksa yeni kayıt oluştur
+          await compare_scored.create({
+              first_car_id: car1,
+              second_car_id: car2,
+              compare_score: 1,
+              date: today, // Tarih alanını ekleyin
+          });
+      } else {
+          // Eğer bugüne ait kayıt varsa score'u artır
+          await compare_scored.update(
+              { compare_score: parseInt(value.compare_score) + 1 },
+              {
+                  where: {
+                      [Op.and]: [
+                          { date: today },
+                          {
+                              [Op.or]: [
+                                  { first_car_id: car1, second_car_id: car2 },
+                                  { first_car_id: car2, second_car_id: car1 },
+                              ],
+                          },
+                      ],
+                  },
+              }
+          );
+      }
+  } catch (error) {
+      console.error('Veritabanı hatası:', error);
+  }
+};
 
-
-
-    } catch (error) {
-        console.error('Veritabanı hatası:', error);
-    }
-}
-  
+  // En çok karşılaştırılan araçları getirir.
 async function getmostcompared() {
+  
   try {
     const valuess = await compare_scored.findAll({
       attributes: ['first_car_id', 'second_car_id'],
@@ -157,7 +174,7 @@ for (let i = 0; i < Arabalar.length; i++) {
     console.error('Error fetching car details:', error);
   }
 }
-
+// Verilen marka adına göre modelleri getirir.
 const getModeller = async (marka) => {
   try {
     const modeller = await Cars.findAll({
@@ -173,10 +190,28 @@ const getModeller = async (marka) => {
   }
 };
 
+// Ziyaretçi sayısını artırır.
+const increaseVisitorCount = async () => {
+  const today = new Date();
+  try {
+    // Ziyaretçi sayısını 1 artırıyoruz
+    const [siteStats, created] = await visitor_history.findOrCreate({
+      where: { tarih: today.toISOString().split('T')[0] },
+      defaults: { ziyaret_sayisi: 0 }
+    });
+
+    siteStats.ziyaret_sayisi += 1;
+    await siteStats.save();
+    console.log(`Ziyaretçi sayısı başarıyla güncellendi: ${siteStats.visitor_count}`);
+  } catch (error) {
+    console.error("Ziyaretçi sayısı artırılırken hata oluştu:", error);
+  }
+};
+
 
 //karşılaştırılan arabaların istatistiklerini getiren method
-  const İstatistik_Getir= async () => {   
-    try {
+const İstatistik_Getir = async () => {   
+  try {
       const topComparisons = await compare_scored.findAll({
           attributes: [
               'first_car_id',
@@ -184,52 +219,48 @@ const getModeller = async (marka) => {
               'compare_score',
               [sequelize.fn('SUM', sequelize.col('compare_score')), 'total_score']
           ],
-          group: ['first_car_id', 'second_car_id','compare_score'],
+          group: ['first_car_id', 'second_car_id', 'compare_score'],
           order: [[sequelize.literal('total_score'), 'DESC']],
           limit: 5
       });
-      
-    // Çiftleri saklayacak boş dizi
 
-      // comparisonData'yı dolaşarak çiftleri oluşturuyoruz
+      // Eğer veri bulunamadıysa boş bir dizi döndür
+      if (!topComparisons || topComparisons.length === 0) {
+          console.warn("Veritabanında herhangi bir karşılaştırma verisi bulunamadı.");
+          return [];
+      }
+
+      // Gelen veri 5'ten az ise kullanıcıya bilgi ver
+      if (topComparisons.length < 5) {
+          console.warn(`Sadece ${topComparisons.length} adet karşılaştırma verisi bulundu.`);
+      }
+
+      // Çiftleri saklayacak boş dizi
       const pairs = await Promise.all(
-        topComparisons.map(async (comparison) => {
-            const firstCarResult = await getCarsByIdsname(comparison.first_car_id);
-            const secondCarResult = await getCarsByIdsname(comparison.second_car_id);
-    
-            return {
-                firstCar: firstCarResult[0], // Diziden ilk objeyi alıyoruz
-                secondCar: secondCarResult[0],
-                scoree: comparison.compare_score[0]
-            };
-        })
-    );
-    
-      return pairs;
+          topComparisons.map(async (comparison) => {
+              const firstCarResult = await getCarsByIdsname(comparison.first_car_id);
+              const secondCarResult = await getCarsByIdsname(comparison.second_car_id);
+              
+              // Eğer herhangi bir araba bilgisi bulunamazsa default bir mesaj oluştur
+              const firstCar = firstCarResult[0] || { marka: 'Bilinmiyor', model: 'Bilinmiyor' };
+              const secondCar = secondCarResult[0] || { marka: 'Bilinmiyor', model: 'Bilinmiyor' };
 
+              return {
+                  firstCar,
+                  secondCar,
+                  scoree: comparison.compare_score || 0 // Eğer score yoksa 0 olarak kabul et
+              };
+          })
+      );
+
+      return pairs;
 
   } catch (error) {
       console.error("En çok karşılaştırılanlar hatası:", error);
-   
+      return []; // Hata durumunda boş bir dizi döndür
   }
-  
-    
-  };
+};
 
-  const Toplam_Karsilastirma_Miktari= async () => {
-    
-  try{
-      const totalComparisons = await compare_scored.sum('compare_score'); // compare_score sütunundaki toplamı alır
-    
-      return totalComparisons;
-     }  
-     
-     catch (error) {
-      console.error("Toplam karşılaştırma hatası:", error);
-     
-    }
-  
-  };
 
 
 
@@ -242,6 +273,7 @@ module.exports = {
     İstatistik_Getir,
     send_compared_cars,
     getmostcompared,
-    Toplam_Karsilastirma_Miktari,
-    İstatistik_Getir
+    İstatistik_Getir,
+    increaseVisitorCount,
+    
   };

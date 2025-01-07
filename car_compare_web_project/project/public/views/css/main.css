@@ -232,6 +232,18 @@ body {
   opacity: 1;
   text-align: center;
 }
+.v603_150 {
+  width: 500px;
+  color: rgb(255, 255, 255);
+  position: absolute;
+  top: 150px;
+  left: 20px;
+  font-family: Francois One;
+  font-weight: Regular;
+  font-size: 19px;
+  opacity: 1;
+  text-align: center;
+}
 .v603_99 {
   width: 517px;
   height: 207px;
@@ -288,6 +300,18 @@ body {
   position: absolute;
   top: 87px;
   left: 220px;
+  font-family: Francois One;
+  font-weight: Regular;
+  font-size: 19px;
+  opacity: 1;
+  text-align: center;
+}
+.v603_151 {
+  width: 500px;
+  color: rgb(255, 255, 255);
+  position: absolute;
+  top: 150px;
+  left: 20px;
   font-family: Francois One;
   font-weight: Regular;
   font-size: 19px;
@@ -356,6 +380,18 @@ body {
   opacity: 1;
   text-align: center;
 }
+.v603_154 {
+  width: 500px;
+  color: rgb(255, 255, 255);
+  position: absolute;
+  top: 150px;
+  left: 30px;
+  font-family: Francois One;
+  font-weight: Regular;
+  font-size: 19px;
+  opacity: 1;
+  text-align: center;
+}
 .v603_92 {
   width: 517px;
   height: 191px;
@@ -412,6 +448,18 @@ body {
   position: absolute;
   top: 80px;
   left: 220px;
+  font-family: Francois One;
+  font-weight: Regular;
+  font-size: 19px;
+  opacity: 1;
+  text-align: center;
+}
+.v603_155 { /*param4*/
+  width: 500px;
+  color: rgb(255, 255, 255);
+  position: absolute;
+  top: 140px;
+  left: 30px;
   font-family: Francois One;
   font-weight: Regular;
   font-size: 19px;
