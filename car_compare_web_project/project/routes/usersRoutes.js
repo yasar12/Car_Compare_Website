@@ -4,7 +4,13 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const userrepository = require("../repositories/userRepository");
 const axios = require('axios');
+const UserRepositoryProxy = require("../proxy/RouteProx");
+const userRepoProxy = new UserRepositoryProxy();
+const { Subject, Observer } = require('../Logger/UserLoggin');
+const observer = new Observer();
+const subject = new Subject();
 
+subject.addObserver(observer);
 function errorHandler(err, req, res, next) {
     console.error('Error Middleware:', err.stack);
     res.status(err.status || 500).send({ error: err.message || 'Internal Server Error' });
@@ -22,7 +28,7 @@ route.get("/", async (req, res, next) => {
 route.use(async (req, res, next) => {
     if (!req.cookies.visited)
        {
-      await userrepository.increaseVisitorCount();
+        await subject.notifyObservers('visit');
       res.cookie('visited', true, { maxAge: 24 * 60 * 60 * 1000 });
       console.log("Ziyaretçi sayısı artırıldı.");
        }
@@ -40,7 +46,7 @@ next();
 route.get("/car_compare", async (req, res, next) => {
     try {
        
-        const cars = await userrepository.getMarkalar();
+        const cars = await userRepoProxy.getMarkalar();
         const comparisonData = await userrepository.İstatistik_Getir();
         
         res.render("index", { brands: cars, modeller: ['empty'],params:comparisonData});
@@ -56,7 +62,7 @@ route.post("/car_compare", async (req, res, next) => {
         
 
         
-        const modellerr = await userrepository.getModeller(marka); 
+        const modellerr = await userRepoProxy.getModeller(marka); 
         
 
        await userrepository.getmostcompared();
@@ -90,8 +96,7 @@ route.get('/car_compare/resultgpt', async (req, res,next) => {
         
         car1 = carDetails1[0];
         car2 = carDetails2[0];
-        await userrepository.send_compared_cars(model1,model2);
-
+        await subject.notifyObservers('comparison', { model1, model2 });
         features = [
             { key: 'year', name: 'Year' },
             { key: 'price', name: 'Price' },
