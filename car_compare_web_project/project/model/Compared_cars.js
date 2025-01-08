@@ -21,7 +21,11 @@ const Most_Compares = sequelize.define('Most_Compares', {
  compare_score: {
       type: DataTypes.BIGINT,
       allowNull: false
-  }
+  },
+  date: {
+    type: DataTypes.DATEONLY,
+    allowNull: false
+}
 }, {
   tableName: 'Most_Compares', // Specify your table name if different from 'Cars'
   timestamps: false  // Disable timestamps if not needed
